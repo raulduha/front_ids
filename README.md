@@ -11,3 +11,4 @@
 * pip install djangorestframework
 * pip install django-cors-headers
 * pip install coreapi
+* pip install drf-yasg

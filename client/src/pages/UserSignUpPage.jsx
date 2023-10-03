@@ -19,7 +19,7 @@ export function UserSignUpPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/records/api/v1/users/', formData);
+            const response = await axios.post('http://localhost:8000/records/api/v1/users/signup/', formData);
             console.log('Registro exitoso', response.data);
         } catch (error) {
             console.error('Error en el registro', error);

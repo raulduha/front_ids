@@ -34,6 +34,16 @@ class UserView(viewsets.ModelViewSet):
     def signup(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            data = serializer.validated_data
+            user = User.objects.create(
+                email=data['email'],  
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                phone=data['phone'],
+                role=data['role']
+            )
+            user.set_password(data['password'])
+            user.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
