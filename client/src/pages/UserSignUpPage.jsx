@@ -7,7 +7,7 @@ export function UserSignUpPage() {
         last_name: '',
         email: '',
         phone: '',
-        role: '', 
+        role: '0', 
         password: '', 
     });
 
