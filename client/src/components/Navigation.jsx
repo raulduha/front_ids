@@ -6,7 +6,7 @@ export function Navigation() {
             <Link to="/users">
                 <h1>Record App</h1>
             </Link>
-            <Link to="/users-create">create user</Link>
+            <Link to="/login">Login</Link>
         </div>
     );
 }
