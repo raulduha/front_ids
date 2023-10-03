@@ -36,9 +36,10 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
-    role = models.IntegerField(choices=ROLES)
+    role = models.IntegerField(choices=ROLES, default=0)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -47,6 +48,14 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+    
+    def has_perm(self, perm, obj=None):
+        return True
+    
+    def has_module_perms(self, app_label):
+        if self.is_superuser:
+            return True
+        return False
 
 class Machine(models.Model):
     machine_id = models.AutoField(primary_key=True)

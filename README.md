@@ -12,3 +12,9 @@
 * pip install django-cors-headers
 * pip install coreapi
 * pip install drf-yasg
+
+## Para correr el backend
+Dentro de la carpeta 1raIteracion poner: python manage.py runserver
+
+## Para correr el frontend
+Dentro de la carpeta client poner: npm run dev
