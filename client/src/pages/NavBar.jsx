@@ -13,8 +13,9 @@ function NavBar() {
     <nav className={`navbar ${mobileNavActive ? 'active' : ''}`}>
       <div className="navbar-container">
         <Link to="/" className="navbar-brand">
-          Home Page
+          <img src="/datafusion.png" alt="Home" style={{ width: '100px' }} />
         </Link>
+
         <div className="nav-toggle" onClick={toggleMobileNav}>
           <i className="fas fa-bars"></i>
         </div>
