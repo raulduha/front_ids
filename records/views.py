@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
-from .serializers import UserSerializer
-from .models import User
+from .serializers import UserSerializer, MachineSerializer, ProductSerializer, ShiftSerializer, ShiftAssignmentSerializer, ProductionSerializer
+from .models import User, Machine, Product, Shift, ShiftAssignment, Production
 
 #create your views here
 class UserView(viewsets.ModelViewSet):
@@ -24,11 +24,6 @@ class UserView(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response({'detail': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    @action(detail=False, methods=['post'])
-    def logout(self, request):
-        logout(request)
-        return Response({'detail': 'Cierre de sesión exitoso'}, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['post'])
     def signup(self, request):
@@ -47,3 +42,23 @@ class UserView(viewsets.ModelViewSet):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class MachineView(viewsets.ModelViewSet):
+    serializer_class = MachineSerializer
+    queryset = Machine.objects.all()
+
+class ProductView(viewsets.ModelViewSet):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+class ShiftView(viewsets.ModelViewSet):
+    serializer_class = ShiftSerializer
+    queryset = Shift.objects.all()
+
+class ShiftAssignmentView(viewsets.ModelViewSet):
+    serializer_class = ShiftAssignmentSerializer
+    queryset = ShiftAssignment.objects.all()
+
+class ProductionView(viewsets.ModelViewSet):
+    serializer_class = ProductionSerializer
+    queryset = Production.objects.all()

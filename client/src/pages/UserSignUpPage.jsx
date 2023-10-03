@@ -1,8 +1,7 @@
-// UserSignUpPage.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
-import './SignUp.css'; // Import the CSS file
+import './SignUp.css'; 
+import { useNavigate } from 'react-router-dom';
 
 export function UserSignUpPage() {
   const [formData, setFormData] = useState({
@@ -14,6 +13,9 @@ export function UserSignUpPage() {
     password: '',
   });
 
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -24,8 +26,13 @@ export function UserSignUpPage() {
     try {
       const response = await axios.post('http://localhost:8000/records/api/v1/users/signup/', formData);
       console.log('Registro exitoso', response.data);
+      navigate('/login');
     } catch (error) {
-      console.error('Error en el registro', error);
+      if (error.response && error.response.status === 400) {
+        setError('El correo electrónico ya está en uso. Por favor, utilice otro.');
+      } else {
+        setError('Error en el registro. Por favor, inténtelo de nuevo más tarde.');
+      }
     }
   };
 
@@ -99,6 +106,7 @@ export function UserSignUpPage() {
           />
         </div>
         <button type="submit" className="signup-button">Registrarse</button>
+        {error && <p className="error-message">{error}</p>}
       </form>
     </div>
   );

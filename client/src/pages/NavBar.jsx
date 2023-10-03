@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css'; 
+import { useAuth } from '../components/AuthContext';
 
 function NavBar() {
   const [mobileNavActive, setMobileNavActive] = useState(false);
+  const { user, logout } = useAuth();
 
   const toggleMobileNav = () => {
     setMobileNavActive(!mobileNavActive);
@@ -21,20 +23,30 @@ function NavBar() {
         </div>
         <ul id="navbar" className={`navbar-nav ${mobileNavActive ? 'active' : ''}`}>
           <li className="nav-item">
-            <Link to="/users" className="nav-link" activeClassName="active">
+            <Link to="/users" className="nav-link">
               Users
             </Link>
           </li>
-          <li className="nav-item">
-            <Link to="/login" className="nav-link" activeClassName="active">
-              Login
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/signup" className="nav-link" activeClassName="active">
-              Sign up
-            </Link>
-          </li>
+          {user ? (
+            <li className="nav-item">
+              <button className="nav-item" onClick={logout}>
+                Logout
+              </button>
+            </li>
+          ) : (
+            <>
+              <li className="nav-item">
+                <Link to="/login" className="nav-link">
+                  Login
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/signup" className="nav-link">
+                  Sign up
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>

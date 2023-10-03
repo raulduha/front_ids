@@ -1,16 +1,16 @@
-
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import './UserLogInPage.css';
+import { useNavigate } from 'react-router-dom';
 
 export function UserLogInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const { login } = useAuth(); // Utilize the login function provided by the authentication context
+  const { login } = useAuth();
+  const navigate = useNavigate(); 
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,8 +21,8 @@ export function UserLogInPage() {
       });
       console.log('Inicio de sesión exitoso');
 
-      // Utilize the login function to update the authentication state
       login(response.data);
+      navigate('/'); 
     } catch (err) {
       setError('Credenciales incorrectas');
       console.error(err);

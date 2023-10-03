@@ -11,9 +11,9 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <NavBar /> {/* Include the NavBar component */}
+        <NavBar /> 
         <Routes>
-          <Route path="/" element={<HomePage />} /> {/* Add a route for the HomePage */}
+          <Route path="/" element={<HomePage />} />
           <Route path="/users" element={<UserPage />} />
           <Route path="/login" element={<UserLogInPage />} />
           <Route path="/signup" element={<UserSignUpPage />} />
