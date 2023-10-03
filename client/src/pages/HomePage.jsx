@@ -1,10 +1,13 @@
 import React from 'react';
-
+import Cards from '../styles/Cards';
+import Footer from '../styles/Footer';
+import HeroSection from '../styles/HeroSection';
 function HomePage() {
   return (
-    <div className="home-page">
-      <h2>Bienvenido al homepage</h2>
-      {/* Add any content or features you want for the homepage */}
+    <div>
+      <HeroSection />
+      <Cards />
+      <Footer />
     </div>
   );
 }
