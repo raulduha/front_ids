@@ -47,3 +47,49 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+class Machine(models.Model):
+    machine_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Product(models.Model):
+    product_id = models.AutoField(primary_key=True)
+    brand = models.CharField(max_length=50)
+    type = models.CharField(max_length=50)
+    format = models.CharField(max_length=50)
+    price = models.models.DecimalField()
+
+    def __str__(self):
+        return self.name
+    
+class Shift(models.Model):
+    shift_id = models.AutoField(primary_key=True)
+    shift_name = models.CharField(max_length=50)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self):
+        return self.shift_name
+
+class ShiftAssignment(models.Model):
+    assignment_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    shift_id = models.ForeignKey(Shift, on_delete=models.CASCADE)
+    machine_id = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    assignment_date = models.DateField()
+
+    def __str__(self):
+        return self.assignment_id
+    
+class Production:
+    prod_id = models.AutoField(primary_key=True)
+    shiftAssignment_id = models.ForeignKey(ShiftAssignment, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+
+    def __str__(self):
+        return self.prod_id
