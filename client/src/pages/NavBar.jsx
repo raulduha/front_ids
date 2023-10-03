@@ -1,29 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css'; 
 
 function NavBar() {
+  const [mobileNavActive, setMobileNavActive] = useState(false);
+
+  const toggleMobileNav = () => {
+    setMobileNavActive(!mobileNavActive);
+  };
+
   return (
-    <nav className="navbar">
-      <Link to="/" className="navbar-brand">
-        Home Page
-      </Link>
-      <ul className="navbar-nav">
-        <li className="nav-item">
-          <Link to="/users" className="nav-link">
-            Users
-          </Link>
-        </li>
-      </ul>
-      <div className="user-menu">
-        <ul className="user-dropdown">
-          <li>
-            <Link to="/login" className="user-dropdown-item">
+    <nav className={`navbar ${mobileNavActive ? 'active' : ''}`}>
+      <div className="navbar-container">
+        <Link to="/" className="navbar-brand">
+          Home Page
+        </Link>
+        <div className="nav-toggle" onClick={toggleMobileNav}>
+          <i className="fas fa-bars"></i>
+        </div>
+        <ul id="navbar" className={`navbar-nav ${mobileNavActive ? 'active' : ''}`}>
+          <li className="nav-item">
+            <Link to="/users" className="nav-link" activeClassName="active">
+              Users
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/login" className="nav-link" activeClassName="active">
               Login
             </Link>
           </li>
-          <li>
-            <Link to="/signup" className="user-dropdown-item">
+          <li className="nav-item">
+            <Link to="/signup" className="nav-link" activeClassName="active">
               Sign up
             </Link>
           </li>
