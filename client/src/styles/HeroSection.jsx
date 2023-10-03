@@ -15,8 +15,10 @@ function HeroSection() {
           buttonStyle='btn--outline'
           buttonSize='btn--large'
           style={{ color: '#fff', borderColor: '#fff' }}
+          
         >
           Registrate
+
         </Button>
         
       </div>
