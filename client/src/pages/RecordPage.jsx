@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './RecordPage.css';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 function RecordPage() {
   const [records, setRecords] = useState([]);
   const [newRecord, setNewRecord] = useState({
@@ -13,7 +13,7 @@ function RecordPage() {
   const baseURL = 'http://localhost:8000/records/api/v1'; // Reemplaza con tu URL base
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]); // Almacena la información de los usuarios
-
+  const navigate =useNavigate();
   
   useEffect(() => {
     // Realiza una solicitud al servidor para obtener la lista de usuarios.
@@ -37,7 +37,7 @@ function RecordPage() {
       });
   }, []);
 
-
+  
   const loadRecords = async () => {
     try {
       const response = await axios.get(`${baseURL}/productions/`);
@@ -60,6 +60,7 @@ function RecordPage() {
     try {
       const response = await axios.put(`${baseURL}/productions/${record.prod_id}/`, record);
       console.log('Registro editado:', response.data);
+      navigate(`/editar/${record.prod_id}`);
       loadRecords();
     } catch (error) {
       console.error('Error al editar registro:', error);
