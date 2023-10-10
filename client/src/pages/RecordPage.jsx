@@ -4,13 +4,17 @@ import axios from 'axios';
 
 function RecordPage() {
   const [records, setRecords] = useState([]);
-  const [newRecord, setNewRecord] = useState({ shiftAssignment_id: '', product_id: '', amount: '' });
+  const [newRecord, setNewRecord] = useState({
+    shiftAssignment_id: '',
+    product_id: '',
+    amount: '',
+  });
 
   const baseURL = 'http://localhost:8000/records/api/v1'; // Reemplaza con tu URL base
 
   const loadRecords = async () => {
     try {
-      const response = await axios.get(`${baseURL}/productions`);
+      const response = await axios.get(`http://localhost:8000/records/api/v1/productions/`);
       setRecords(response.data);
     } catch (error) {
       console.error('Error al cargar registros:', error);
@@ -21,10 +25,14 @@ function RecordPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${baseURL}/productions`, newRecord);
+      const response = await axios.post(`${baseURL}/productions/`, newRecord);
       console.log('Registro creado:', response.data);
       loadRecords();
-      setNewRecord({ shiftAssignment_id: '', product_id: '', amount: '' });
+      setNewRecord({
+        shiftAssignment_id: '',
+        product_id: '',
+        amount: '',
+      });
     } catch (error) {
       console.error('Error al crear registro:', error);
     }
@@ -39,7 +47,9 @@ function RecordPage() {
       <h1>Mi Historial de Registros</h1>
       <ul className="record-list">
         {records.map((record) => (
-          <li key={record.prod_id}>Registro {record.prod_id}</li>
+            
+          <li key={record.prod_id}>Registro {record.prod_id} = Amount {record.amount} </li>
+        
         ))}
       </ul>
 
@@ -50,7 +60,9 @@ function RecordPage() {
           <input
             type="text"
             value={newRecord.shiftAssignment_id}
-            onChange={(e) => setNewRecord({ ...newRecord, shiftAssignment_id: e.target.value })}
+            onChange={(e) =>
+              setNewRecord({ ...newRecord, shiftAssignment_id: e.target.value })
+            }
           />
         </div>
         <div className="form-group">
