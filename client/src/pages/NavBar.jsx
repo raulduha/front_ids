@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './NavBar.css'; 
 import { useAuth } from '../components/AuthContext';
 
 function NavBar() {
   const [mobileNavActive, setMobileNavActive] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate(); // Obtén la función de navegación
 
   const toggleMobileNav = () => {
     setMobileNavActive(!mobileNavActive);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/'); // Redirige a la página principal al hacer clic en Logout
   };
 
   return (
@@ -29,16 +35,16 @@ function NavBar() {
           </li>
           {user ? (
             <>
-            <li className="nav-item">
+              <li className="nav-item">
                 <Link to="/register" className="nav-link">
                   Register
                 </Link>
               </li>
-            <li className="nav-item">
-              <button className="nav-item" onClick={logout}>
-                Logout
-              </button>
-            </li>
+              <li className="nav-item">
+                <button className="nav-item" onClick={handleLogout}>
+                  Logout
+                </button>
+              </li>
             </>
           ) : (
             <>
