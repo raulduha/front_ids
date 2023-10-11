@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from datetime import datetime
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -90,6 +91,7 @@ class ShiftAssignment(models.Model):
     shift_id = models.ForeignKey(Shift, on_delete=models.CASCADE)
     machine_id = models.ForeignKey(Machine, on_delete=models.CASCADE)
     assignment_date = models.DateField()
+    created_at = models.DateTimeField(default=datetime.now, editable=False)
 
     def __str__(self):
         return self.assignment_id
