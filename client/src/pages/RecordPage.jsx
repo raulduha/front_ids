@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './RecordPage.css';
 import axios from 'axios';
+import { useAuth } from '../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
+
 function RecordPage() {
   const [records, setRecords] = useState([]);
   const [newRecord, setNewRecord] = useState({
@@ -11,7 +13,7 @@ function RecordPage() {
   });
 
   const baseURL = 'http://localhost:8000/records/api/v1'; // Reemplaza con tu URL base
-  const [user, setUser] = useState(null);
+  const { user } = useAuth(); 
   const [users, setUsers] = useState([]); // Almacena la información de los usuarios
   const navigate =useNavigate();
   
@@ -23,7 +25,7 @@ function RecordPage() {
         // Por ejemplo, podrías filtrar el usuario por su dirección de correo electrónico
         // o por algún otro criterio de identificación.
         // Supongamos que quieres obtener el usuario con un cierto correo electrónico:
-        const userEmail = 'raduhalde@miuandes.cl';
+        const userEmail = user.email;
         const currentUser = response.data.find((user) => user.email === userEmail);
 
         if (currentUser) {
