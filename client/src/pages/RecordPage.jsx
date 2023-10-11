@@ -8,22 +8,31 @@ function RecordPage() {
   const [records, setRecords] = useState([]);
   const [newRecord, setNewRecord] = useState({
     shiftAssignment_id: '',
-    product_id: '',
+    product_id: '', // Cambia esto a un objeto que almacene tanto el ID como el nombre
     amount: '',
   });
 
   const baseURL = 'http://localhost:8000/records/api/v1'; // Reemplaza con tu URL base
-  const { user } = useAuth(); 
-  const [users, setUsers] = useState([]); // Almacena la información de los usuarios
-  const navigate =useNavigate();
-  
+  const { user } = useAuth();
+  const [products, setProducts] = useState([]); // Lista de productos
+  const navigate = useNavigate();
+
   useEffect(() => {
+    // Obtener la lista de productos desde tu API
+    axios
+      .get(`${baseURL}/products/`)
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar productos:', error);
+      });
+
     // Realiza una solicitud al servidor para obtener la lista de usuarios.
-    axios.get('http://localhost:8000/records/api/v1/users/')
+    axios
+      .get('http://localhost:8000/records/api/v1/users/')
       .then((response) => {
         // Aquí puedes procesar la respuesta y determinar cuál es el usuario actual.
-        // Por ejemplo, podrías filtrar el usuario por su dirección de correo electrónico
-        // o por algún otro criterio de identificación.
         // Supongamos que quieres obtener el usuario con un cierto correo electrónico:
         const userEmail = user.email;
         const currentUser = response.data.find((user) => user.email === userEmail);
@@ -39,7 +48,6 @@ function RecordPage() {
       });
   }, []);
 
-  
   const loadRecords = async () => {
     try {
       const response = await axios.get(`${baseURL}/productions/`);
@@ -60,7 +68,10 @@ function RecordPage() {
   const handleEdit = async (record) => {
     // Lógica para editar el registro.
     try {
-      const response = await axios.put(`${baseURL}/productions/${record.prod_id}/`, record);
+      const response = await axios.put(
+        `${baseURL}/productions/${record.prod_id}/`,
+        record
+      );
       console.log('Registro editado:', response.data);
       navigate(`/editar/${record.prod_id}`);
       loadRecords();
@@ -89,13 +100,9 @@ function RecordPage() {
     loadRecords();
   }, []);
 
-
-  // Calcula el rol del usuario a partir de la información real del usuario (ejemplo)
   const userRole = user && user.role;
-  console.log('Usuario:', user);
-  console.log('userRole:', userRole);
-    // Calcula si el usuario puede editar o eliminar registros
   const canEditAndDelete = userRole === 2 || userRole === 3 || userRole === 4;
+
   return (
     <div className="record-page">
       <h1>Mi Historial de Registros</h1>
@@ -112,7 +119,7 @@ function RecordPage() {
           </li>
         ))}
       </ul>
-  
+
       <h2>Crear un Registro</h2>
       <form onSubmit={createRecord}>
         <div className="form-group">
@@ -121,20 +128,28 @@ function RecordPage() {
             type="text"
             value={newRecord.shiftAssignment_id}
             onChange={(e) =>
-              setNewRecord({ ...newRecord, shiftAssignment_id: e.target.value })
+              setNewRecord({
+                ...newRecord,
+                shiftAssignment_id: e.target.value,
+              })
             }
           />
         </div>
         <div className="form-group">
           <label>Product ID:</label>
-          <input
-            type="text"
+          <select
             value={newRecord.product_id}
             onChange={(e) =>
               setNewRecord({ ...newRecord, product_id: e.target.value })
-              
             }
-          />
+          >
+            <option value="">Selecciona un producto</option>
+            {products.map((product) => (
+              <option key={product.product_id} value={product.product_id}>
+                {`${product.product_id} - ${product.brand}`}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="form-group">
           <label>Amount:</label>
@@ -146,11 +161,10 @@ function RecordPage() {
             }
           />
         </div>
-        {<button type="submit">Crear Registro</button> }
-        
+        <button type="submit">Crear Registro</button>
       </form>
     </div>
   );
-        }  
+}
 
 export default RecordPage;
