@@ -106,19 +106,6 @@ function RecordPage() {
   return (
     <div className="record-page">
       <h1>Mi Historial de Registros</h1>
-      <ul className="record-list">
-        {records.map((record) => (
-          <li key={record.prod_id}>
-            Registro {record.prod_id} = Amount {record.amount}
-            {canEditAndDelete && (
-              <>
-                <button onClick={() => handleEdit(record)}>Editar</button>
-                <button onClick={() => handleDelete(record)}>Eliminar</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
 
       <h2>Crear un Registro</h2>
       <form onSubmit={createRecord}>
@@ -163,6 +150,43 @@ function RecordPage() {
         </div>
         <button type="submit">Crear Registro</button>
       </form>
+
+      <ul className="record-list">
+        {records.map((record) => (
+          <li key={record.prod_id} className="record-item">
+            <div className="record-info">
+              <div className="record-field">
+                <span className="record-label">Registro ID:</span>
+                <span className="record-value">{record.prod_id}</span>
+              </div>
+              <div className="record-field">
+                <span className="record-label">Shift Assignment ID:</span>
+                <span className="record-value">{record.shiftAssignment_id}</span>
+              </div>
+              <div className="record-field">
+                <span className="record-label">Product ID:</span>
+                <span className="record-value">{record.product_id}</span>
+              </div>
+              <div className="record-field">
+                <span className="record-label">Product Brand:</span>
+                <span className="record-value">
+                  {products.find((product) => product.product_id === record.product_id)?.brand}
+                </span>
+              </div>
+              <div className="record-field">
+                <span className="record-label">Amount:</span>
+                <span className="record-value">{record.amount}</span>
+              </div>
+            </div>
+            {canEditAndDelete && (
+              <div className="record-actions">
+                <button onClick={() => handleEdit(record)}>Editar</button>
+                <button onClick={() => handleDelete(record)}>Eliminar</button>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
