@@ -87,11 +87,13 @@ class Shift(models.Model):
 
 class ShiftAssignment(models.Model):
     assignment_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shift_assignments')
     shift_id = models.ForeignKey(Shift, on_delete=models.CASCADE)
     machine_id = models.ForeignKey(Machine, on_delete=models.CASCADE)
     assignment_date = models.DateField()
     created_at = models.DateTimeField(default=datetime.now, editable=False)
+    modified_at = models.DateTimeField(auto_now=True)
+    modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_shift_assignments')
 
     def __str__(self):
         return self.assignment_id

@@ -27,7 +27,7 @@ class ShiftSerializer(serializers.ModelSerializer):
 class ShiftAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShiftAssignment
-        fields = ("assignment_id", "user_id", "shift_id", "machine_id", "assignment_date", "created_at")
+        fields = ("assignment_id", "user_id", "shift_id", "machine_id", "assignment_date", "created_at", "modified_at", "modified_by")
 
 class ProductionSerializer(serializers.ModelSerializer):
     class Meta:
