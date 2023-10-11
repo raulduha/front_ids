@@ -37,7 +37,7 @@ function NavBar() {
             <>
               <li className="nav-item">
                 <Link to="/register" className="nav-link">
-                  Register
+                  Records
                 </Link>
               </li>
               <li className="nav-item">
