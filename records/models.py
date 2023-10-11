@@ -74,7 +74,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return self.name
+        return str(self.product_id)
     
 class Shift(models.Model):
     shift_id = models.AutoField(primary_key=True)
@@ -96,7 +96,7 @@ class ShiftAssignment(models.Model):
     modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_shift_assignments')
 
     def __str__(self):
-        return self.assignment_id
+        return str(self.assignment_id)
     
 class Production(models.Model):
     prod_id = models.AutoField(primary_key=True)
@@ -105,4 +105,4 @@ class Production(models.Model):
     amount = models.IntegerField()
 
     def __str__(self):
-        return self.prod_id
+        return str(self.prod_id)
