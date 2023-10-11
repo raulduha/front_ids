@@ -91,9 +91,6 @@ class ShiftAssignment(models.Model):
     shift_id = models.ForeignKey(Shift, on_delete=models.CASCADE)
     machine_id = models.ForeignKey(Machine, on_delete=models.CASCADE)
     assignment_date = models.DateField()
-    created_at = models.DateTimeField(default=datetime.now, editable=False)
-    modified_at = models.DateTimeField(auto_now=True)
-    modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_shift_assignments')
 
     def __str__(self):
         return str(self.assignment_id)
@@ -103,6 +100,9 @@ class Production(models.Model):
     shiftAssignment_id = models.ForeignKey(ShiftAssignment, on_delete=models.CASCADE)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount = models.IntegerField()
+    created_at = models.DateTimeField(default=datetime.now, editable=False)
+    modified_at = models.DateTimeField(auto_now=True)
+    modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_shift_assignments')
 
     def __str__(self):
         return str(self.prod_id)
