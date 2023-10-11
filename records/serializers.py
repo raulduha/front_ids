@@ -32,5 +32,5 @@ class ShiftAssignmentSerializer(serializers.ModelSerializer):
 class ProductionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Production
-        fields = ("prod_id", "shiftAssignment_id", "product_id")
+        fields = ("prod_id", "shiftAssignment_id", "product_id", "amount")
         
