@@ -1,24 +1,26 @@
-// EditPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // Para obtener el parámetro de la URL
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 function EditPage() {
-  const { id } = useParams(); // Obtiene el parámetro 'id' de la URL
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [record, setRecord] = useState({});
   const [editedRecord, setEditedRecord] = useState({
     shiftAssignment_id: '',
     product_id: '',
     amount: '',
+    modified_at: '', // Agrega el campo modified_at
   });
 
   useEffect(() => {
-    // Realiza una solicitud para obtener los detalles del registro que se va a editar
-    axios.get(`http://localhost:8000/records/api/v1/productions/${id}`)
+    axios
+      .get(`http://localhost:8000/records/api/v1/productions/${id}`)
       .then((response) => {
-        setRecord(response.data);
-        setEditedRecord(response.data); // Inicializa el formulario con los datos del registro
+        const data = response.data;
+        setRecord(data);
+        setEditedRecord({ ...data, modified_at: new Date().toISOString() }); // Inicializa el formulario con los datos del registro y la fecha actual
       })
       .catch((error) => {
         console.error('Error al cargar detalles del registro:', error);
@@ -27,11 +29,12 @@ function EditPage() {
 
   const handleEdit = async () => {
     try {
-      // Realiza una solicitud PUT para actualizar el registro
-      await axios.put(`http://localhost:8000/records/api/v1/productions/${id}/`, editedRecord);
+      // Actualiza el campo modified_at con la fecha y hora actual
+      const editedData = { ...editedRecord, modified_at: new Date().toISOString() };
+      
+      await axios.put(`http://localhost:8000/records/api/v1/productions/${id}/`, editedData);
       console.log('Registro editado con éxito');
-      navigate('/register')
-      // Redirecciona a la página de detalles o a donde desees después de la edición
+      navigate('/register');
     } catch (error) {
       console.error('Error al editar registro:', error);
     }
@@ -71,7 +74,9 @@ function EditPage() {
             }
           />
         </div>
-        <button type="button" onClick={handleEdit}>Guardar Cambios</button>
+        <button type="button" onClick={handleEdit}>
+          Guardar Cambios
+        </button>
       </form>
     </div>
   );
