@@ -17,7 +17,7 @@ function RecordPage() {
   const baseURL = 'http://localhost:8000/records/api/v1';
   const { user } = useAuth();
   const [products, setProducts] = useState([]);
-  
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +28,16 @@ function RecordPage() {
       })
       .catch((error) => {
         console.error('Error al cargar productos:', error);
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get(`${baseURL}/users/`)
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar usuarios:', error);
       });
   }, []);
 
@@ -69,6 +79,8 @@ function RecordPage() {
   
     // Verifica que el usuario esté autenticado
     if (user && user.id) {
+      const now = new Date();
+      const formattedTimestamp = now.toLocaleString(); 
       // Crea un nuevo registro con el ID de usuario
       const newRecordData = {
         shiftAssignment_id: newRecord.shiftAssignment_id,
@@ -76,6 +88,8 @@ function RecordPage() {
         amount: newRecord.amount,
         modified_by: user.id,
         modified_by_name: `${user.first_name} ${user.last_name}`,
+        created_at: formattedTimestamp,
+        modified_at: formattedTimestamp,
       };
   
       try {
@@ -89,6 +103,7 @@ function RecordPage() {
           amount: '',
           modified_by: null,
           modified_by_name: null,
+          
         });
       } catch (error) {
         console.error('Error al crear registro:', error);
@@ -180,7 +195,7 @@ function RecordPage() {
               <div className="record-field">
                 <span className="record-label">Creado por:</span>
                 <span className="record-value">
-                  {record.modified_by}
+                  {users.find((user) => user.id === record.modified_by)?.email}
                 </span>
               </div>
               <div className="record-field">
