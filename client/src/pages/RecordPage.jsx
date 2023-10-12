@@ -8,17 +8,19 @@ function RecordPage() {
   const [records, setRecords] = useState([]);
   const [newRecord, setNewRecord] = useState({
     shiftAssignment_id: '',
-    product_id: '', // Cambia esto a un objeto que almacene tanto el ID como el nombre
+    product_id: '',
     amount: '',
+    modified_by: null, // Agrega la propiedad modified_by
+    modified_by_name: null, // Agrega la propiedad modified_by_name
   });
 
-  const baseURL = 'http://localhost:8000/records/api/v1'; // Reemplaza con tu URL base
+  const baseURL = 'http://localhost:8000/records/api/v1';
   const { user } = useAuth();
-  const [products, setProducts] = useState([]); // Lista de productos
+  const [products, setProducts] = useState([]);
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Obtener la lista de productos desde tu API
     axios
       .get(`${baseURL}/products/`)
       .then((response) => {
@@ -27,21 +29,12 @@ function RecordPage() {
       .catch((error) => {
         console.error('Error al cargar productos:', error);
       });
-
-    // Realiza una solicitud al servidor para obtener la lista de usuarios.
+  }, []);
+  useEffect(() => {
     axios
-      .get('http://localhost:8000/records/api/v1/users/')
+      .get(`${baseURL}/users/`)
       .then((response) => {
-        // Aquí puedes procesar la respuesta y determinar cuál es el usuario actual.
-        // Supongamos que quieres obtener el usuario con un cierto correo electrónico:
-        const userEmail = user.email;
-        const currentUser = response.data.find((user) => user.email === userEmail);
-
-        if (currentUser) {
-          setUser(currentUser);
-        } else {
-          console.error('Usuario no encontrado');
-        }
+        setUsers(response.data);
       })
       .catch((error) => {
         console.error('Error al cargar usuarios:', error);
@@ -56,17 +49,18 @@ function RecordPage() {
       console.error('Error al cargar registros:', error);
     }
   };
+
   const handleDelete = async (record) => {
     try {
       await axios.delete(`${baseURL}/productions/${record.prod_id}`);
       console.log('Registro eliminado:', record.prod_id);
-      loadRecords(); // Vuelve a cargar la lista de registros después de eliminar.
+      loadRecords();
     } catch (error) {
       console.error('Error al eliminar registro:', error);
     }
   };
+
   const handleEdit = async (record) => {
-    // Lógica para editar el registro.
     try {
       const response = await axios.put(
         `${baseURL}/productions/${record.prod_id}/`,
@@ -79,20 +73,41 @@ function RecordPage() {
       console.error('Error al editar registro:', error);
     }
   };
+
   const createRecord = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await axios.post(`${baseURL}/productions/`, newRecord);
-      console.log('Registro creado:', response.data);
-      loadRecords();
-      setNewRecord({
-        shiftAssignment_id: '',
-        product_id: '',
-        amount: '',
-      });
-    } catch (error) {
-      console.error('Error al crear registro:', error);
+  
+    // Verifica que el usuario esté autenticado
+    if (user && user.id) {
+      const now = new Date();
+      const formattedTimestamp = now.toLocaleString(); 
+      // Crea un nuevo registro con el ID de usuario
+      const newRecordData = {
+        shiftAssignment_id: newRecord.shiftAssignment_id,
+        product_id: newRecord.product_id,
+        amount: newRecord.amount,
+        modified_by: user.id,
+        modified_by_name: `${user.first_name} ${user.last_name}`,
+        created_at: formattedTimestamp,
+        modified_at: formattedTimestamp,
+      };
+  
+      try {
+        const response = await axios.post(`${baseURL}/productions/`, newRecordData);
+        console.log('Registro creado:', response.data);
+        loadRecords();
+        // Limpia los campos del formulario
+        setNewRecord({
+          shiftAssignment_id: '',
+          product_id: '',
+          amount: '',
+          modified_by: null,
+          modified_by_name: null,
+          
+        });
+      } catch (error) {
+        console.error('Error al crear registro:', error);
+      }
     }
   };
 
@@ -177,6 +192,20 @@ function RecordPage() {
                 <span className="record-label">Amount:</span>
                 <span className="record-value">{record.amount}</span>
               </div>
+              <div className="record-field">
+                <span className="record-label">Creado por:</span>
+                <span className="record-value">
+                  {users.find((user) => user.id === record.modified_by)?.email}
+                </span>
+              </div>
+              <div className="record-field">
+                <span className="record-label">Created at:</span>
+                <span className="record-value">{record.created_at}</span>
+              </div>
+              <div className="record-field">
+                <span className="record-label">Modified at:</span>
+                <span className="record-value">{record.modified_at}</span>
+              </div>
             </div>
             {canEditAndDelete && (
               <div className="record-actions">
@@ -192,3 +221,4 @@ function RecordPage() {
 }
 
 export default RecordPage;
+
