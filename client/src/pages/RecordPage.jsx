@@ -3,7 +3,7 @@ import './RecordPage.css';
 import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
 function RecordPage() {
   const [records, setRecords] = useState([]);
   const [newRecord, setNewRecord] = useState({
@@ -51,16 +51,27 @@ function RecordPage() {
   };
 
   const handleDelete = async (record) => {
+    const isConfirmed = window.confirm("¿Estás seguro de que deseas eliminar este registro?");
+    if (!isConfirmed) return;
+
+
     try {
       await axios.delete(`${baseURL}/productions/${record.prod_id}`);
       console.log('Registro eliminado:', record.prod_id);
       loadRecords();
+      toast.success('Registro eliminado con éxito!');
     } catch (error) {
       console.error('Error al eliminar registro:', error);
+      toast.error('Error al eliminar el registro.');
     }
   };
+  
+  
 
   const handleEdit = async (record) => {
+    const isConfirmed = window.confirm("¿Estás seguro de que deseas editar este registro?");
+    if (!isConfirmed) return;
+  
     try {
       const response = await axios.put(
         `${baseURL}/productions/${record.prod_id}/`,
@@ -69,14 +80,18 @@ function RecordPage() {
       console.log('Registro editado:', response.data);
       navigate(`/editar/${record.prod_id}`);
       loadRecords();
+      toast.success('Registro editado con éxito!');
     } catch (error) {
       console.error('Error al editar registro:', error);
+      toast.error('Error al editar registro.');
     }
   };
+  
+  
 
   const createRecord = async (e) => {
     e.preventDefault();
-  
+    
     // Verifica que el usuario esté autenticado
     if (user && user.id) {
       const now = new Date();
@@ -91,7 +106,7 @@ function RecordPage() {
         created_at: formattedTimestamp,
         modified_at: formattedTimestamp,
       };
-  
+    
       try {
         const response = await axios.post(`${baseURL}/productions/`, newRecordData);
         console.log('Registro creado:', response.data);
@@ -103,13 +118,15 @@ function RecordPage() {
           amount: '',
           modified_by: null,
           modified_by_name: null,
-          
         });
+        toast.success('Registro creado con éxito!'); // Notificación de éxito
       } catch (error) {
         console.error('Error al crear registro:', error);
+        toast.error('Error al crear registro.'); // Notificación de error
       }
     }
   };
+  
 
   useEffect(() => {
     loadRecords();
@@ -210,7 +227,8 @@ function RecordPage() {
             {canEditAndDelete && (
               <div className="record-actions">
                 <button onClick={() => handleEdit(record)}>Editar</button>
-                <button onClick={() => handleDelete(record)}>Eliminar</button>
+                <button className="delete" onClick={() => handleDelete(record)}>Eliminar</button>
+
               </div>
             )}
           </li>
