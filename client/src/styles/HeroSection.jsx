@@ -10,16 +10,6 @@ function HeroSection() {
       <h1 style={{ color: '#fff' }}></h1>
       <p style={{ color: '#fff' }}></p>
       <div className='hero-btns'>
-        <Button
-          className='btns'
-          buttonStyle='btn--outline'
-          buttonSize='btn--large'
-          style={{ color: '#fff', borderColor: '#fff' }}
-          
-        >
-          Registrate
-
-        </Button>
         
       </div>
     </div>

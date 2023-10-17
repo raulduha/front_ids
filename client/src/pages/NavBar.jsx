@@ -6,7 +6,7 @@ import { useAuth } from '../components/AuthContext';
 function NavBar() {
   const [mobileNavActive, setMobileNavActive] = useState(false);
   const { user, logout } = useAuth();
-  const navigate = useNavigate(); // Obtén la función de navegación
+  const navigate = useNavigate();
 
   const toggleMobileNav = () => {
     setMobileNavActive(!mobileNavActive);
@@ -14,7 +14,7 @@ function NavBar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/'); // Redirige a la página principal al hacer clic en Logout
+    navigate('/'); // Redirect to the main page when clicking Logout
   };
 
   return (
@@ -28,11 +28,13 @@ function NavBar() {
           <i className="fas fa-bars"></i>
         </div>
         <ul id="navbar" className={`navbar-nav ${mobileNavActive ? 'active' : ''}`}>
-          <li className="nav-item">
-            <Link to="/users" className="nav-link">
-              Users
-            </Link>
-          </li>
+          {user && (user.role === 2 || user.role === 4) && (
+            <li className="nav-item">
+              <Link to="/users" className="nav-link">
+                Users
+              </Link>
+            </li>
+          )}
           {user ? (
             <>
               <li className="nav-item">
@@ -40,6 +42,13 @@ function NavBar() {
                   Records
                 </Link>
               </li>
+              {(user.role === 2 || user.role === 4) && (
+                <li className="nav-item">
+                  <Link to="/signup" className="nav-link">
+                    Sign up
+                  </Link>
+                </li>
+              )}
               <li className="nav-item">
                 <button className="nav-item" onClick={handleLogout}>
                   Logout
@@ -53,11 +62,6 @@ function NavBar() {
                   Login
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link to="/signup" className="nav-link">
-                  Sign up
-                </Link>
-              </li>
             </>
           )}
         </ul>
@@ -67,3 +71,4 @@ function NavBar() {
 }
 
 export default NavBar;
+
