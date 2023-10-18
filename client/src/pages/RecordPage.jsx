@@ -260,13 +260,21 @@ function RecordPage() {
       ) : null}
       {userRole === 2 || userRole === 3 || userRole === 4 ? (
   <div className="filter-section">
-    <label>
+      <label>
       Fecha inicio:
-      <input type="date" onChange={(e) => setStartDate(e.target.value)} />
+      <input 
+        type="date" 
+        value={startDate || ''} 
+        onChange={(e) => setStartDate(e.target.value)} 
+      />
     </label>
     <label>
       Fecha término:
-      <input type="date" onChange={(e) => setEndDate(e.target.value)} />
+      <input 
+        type="date" 
+        value={endDate || ''} 
+        onChange={(e) => setEndDate(e.target.value)} 
+      />
     </label>
     <label>
       Producto:
