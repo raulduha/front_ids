@@ -43,8 +43,18 @@ function RecordPage() {
 
   const loadRecords = async () => {
     try {
-      const response = await axios.get(`${baseURL}/productions/`);
-      setRecords(response.data);
+      let response = await axios.get(`${baseURL}/productions/`);
+      let filteredRecords;
+  
+      if (user && (user.role === 0 || user.role === 1)) {
+        // Filter records to show only those created by the authenticated user
+        filteredRecords = response.data.filter((record) => record.modified_by === user.id);
+      } else {
+        // Show all records for users with other roles (2, 3, or 4)
+        filteredRecords = response.data;
+      }
+  
+      setRecords(filteredRecords);
     } catch (error) {
       console.error('Error al cargar registros:', error);
     }
@@ -134,7 +144,10 @@ function RecordPage() {
 
   const userRole = user && user.role;
   const canEditAndDelete = userRole === 2 || userRole === 3 || userRole === 4;
-
+  // Filter records to show only those belonging to the logged-in user
+  const filteredRecords = records.filter(
+    (record) => record.modified_by_name === `${user.first_name} ${user.last_name}`
+  );
   return (
     <div className="record-page">
       <h1>Mi Historial de Registros</h1>
