@@ -6,6 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 function RecordPage() {
   const [records, setRecords] = useState([]);
+  const [filter, setFilter] = useState('All'); // Default filter is 'All'
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState('All');
+
   const [newRecord, setNewRecord] = useState({
     shiftAssignment_id: '',
     product_id: '',
@@ -43,12 +48,70 @@ function RecordPage() {
 
   const loadRecords = async () => {
     try {
-      const response = await axios.get(`${baseURL}/productions/`);
-      setRecords(response.data);
+      let response = await axios.get(`${baseURL}/productions/`);
+      let filteredRecords = response.data;
+  
+      if (user && (user.role === 0 || user.role === 1)) {
+        // Filter records to show only those created by the authenticated user
+        filteredRecords = filteredRecords.filter((record) => record.modified_by === user.id);
+      }
+  
+      // Filter by startDate and endDate
+      if (startDate) {
+        const startDateTime = new Date(startDate).getTime();
+        filteredRecords = filteredRecords.filter((record) => {
+          const recordDateTime = new Date(record.created_at).getTime();
+          return recordDateTime >= startDateTime;
+        });
+      }
+  
+      if (endDate) {
+        const endDateTime = new Date(endDate).getTime();
+        filteredRecords = filteredRecords.filter((record) => {
+          const recordDateTime = new Date(record.created_at).getTime();
+          return recordDateTime <= endDateTime;
+        });
+      }
+  
+      // Filter by selected product
+      if (selectedProduct !== 'All') {
+        filteredRecords = filteredRecords.filter((record) => record.product_id.toString() === selectedProduct);
+      }
+  
+      // Apply the "Today" and "Past" filters (these are mutually exclusive with date filters)
+      if (!startDate && !endDate) {
+        if (filter === 'Today') {
+          const today = new Date().toLocaleDateString();
+          filteredRecords = filteredRecords.filter((record) => {
+            const createdAtDate = new Date(record.created_at);
+            return createdAtDate.toLocaleDateString() === today;
+          });
+        } else if (filter === 'Past') {
+          const today = new Date().toLocaleDateString();
+          filteredRecords = filteredRecords.filter((record) => {
+            const createdAtDate = new Date(record.created_at);
+            return createdAtDate.toLocaleDateString() !== today;
+          });
+        }
+      }
+  
+      setRecords(filteredRecords);
     } catch (error) {
       console.error('Error al cargar registros:', error);
     }
   };
+  
+  
+  
+  const handleFilterChange = (newFilter) => {
+    // Update the filter state immediately
+    setFilter(newFilter);
+  };
+  
+  useEffect(() => {
+    loadRecords();
+  }, [filter, startDate, endDate, selectedProduct]);
+  
 
   const handleDelete = async (record) => {
     const isConfirmed = window.confirm("¿Estás seguro de que deseas eliminar este registro?");
@@ -134,10 +197,16 @@ function RecordPage() {
 
   const userRole = user && user.role;
   const canEditAndDelete = userRole === 2 || userRole === 3 || userRole === 4;
-
+  // Filter records to show only those belonging to the logged-in user
+  const filteredRecords = records.filter(
+    (record) => record.modified_by_name === `${user.first_name} ${user.last_name}`
+  );
   return (
     <div className="record-page">
       <h1>Mi Historial de Registros</h1>
+
+      
+
 
       <h2>Crear un Registro</h2>
       <form onSubmit={createRecord}>
@@ -182,7 +251,46 @@ function RecordPage() {
         </div>
         <button type="submit">Crear Registro</button>
       </form>
-
+      {userRole === 0 || userRole === 1 ? (
+        <div className="filter-buttons">
+          <button onClick={() => handleFilterChange('All')}>Todos</button>
+          <button onClick={() => handleFilterChange('Today')}>Hoy</button>
+          <button onClick={() => handleFilterChange('Past')}>Pasados</button>
+        </div>
+      ) : null}
+      {userRole === 2 || userRole === 3 || userRole === 4 ? (
+  <div className="filter-section">
+      <label>
+      Fecha inicio:
+      <input 
+        type="date" 
+        value={startDate || ''} 
+        onChange={(e) => setStartDate(e.target.value)} 
+      />
+    </label>
+    <label>
+      Fecha término:
+      <input 
+        type="date" 
+        value={endDate || ''} 
+        onChange={(e) => setEndDate(e.target.value)} 
+      />
+    </label>
+    <label>
+      Producto:
+      <select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)}>
+        <option value="All">Todos</option>
+        {products.map((product) => (
+          <option key={product.product_id} value={product.product_id}>
+            {product.brand}
+          </option>
+        ))}
+      </select>
+    </label>
+    <button onClick={loadRecords}>Buscar</button>
+    <button onClick={() => { setStartDate(null); setEndDate(null); setSelectedProduct('All'); }}>Limpiar filtros</button>
+  </div>
+) : null}
       <ul className="record-list">
         {records.map((record) => (
           <li key={record.prod_id} className="record-item">
