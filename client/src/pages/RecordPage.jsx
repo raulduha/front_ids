@@ -178,11 +178,14 @@ function RecordPage() {
     <div className="record-page">
       <h1>Mi Historial de Registros</h1>
 
-      <div className="filter-buttons">
-        <button onClick={() => handleFilterChange('All')}>Todos</button>
-        <button onClick={() => handleFilterChange('Today')}>Hoy</button>
-        <button onClick={() => handleFilterChange('Past')}>Pasados</button>
-      </div>
+      {userRole === 0 || userRole === 1 ? (
+        <div className="filter-buttons">
+          <button onClick={() => handleFilterChange('All')}>Todos</button>
+          <button onClick={() => handleFilterChange('Today')}>Hoy</button>
+          <button onClick={() => handleFilterChange('Past')}>Pasados</button>
+        </div>
+      ) : null}
+
 
       <h2>Crear un Registro</h2>
       <form onSubmit={createRecord}>
