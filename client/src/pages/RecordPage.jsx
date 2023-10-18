@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 function RecordPage() {
   const [records, setRecords] = useState([]);
+  const [filter, setFilter] = useState('All'); // Default filter is 'All'
   const [newRecord, setNewRecord] = useState({
     shiftAssignment_id: '',
     product_id: '',
@@ -54,11 +55,36 @@ function RecordPage() {
         filteredRecords = response.data;
       }
   
+      // Apply the selected filter
+      if (filter === 'Today') {
+        const today = new Date().toLocaleDateString();
+        filteredRecords = filteredRecords.filter((record) => {
+          const createdAtDate = new Date(record.created_at);
+          return createdAtDate.toLocaleDateString() === today;
+        });
+      } else if (filter === 'Past') {
+        const today = new Date().toLocaleDateString();
+        filteredRecords = filteredRecords.filter((record) => {
+          const createdAtDate = new Date(record.created_at);
+          return createdAtDate.toLocaleDateString() !== today;
+        });
+      }
+  
       setRecords(filteredRecords);
     } catch (error) {
       console.error('Error al cargar registros:', error);
     }
   };
+  
+  const handleFilterChange = (newFilter) => {
+    // Update the filter state immediately
+    setFilter(newFilter);
+  };
+  
+  useEffect(() => {
+    // Trigger the loadRecords function when the filter state changes
+    loadRecords();
+  }, [filter]);
 
   const handleDelete = async (record) => {
     const isConfirmed = window.confirm("¿Estás seguro de que deseas eliminar este registro?");
@@ -151,6 +177,12 @@ function RecordPage() {
   return (
     <div className="record-page">
       <h1>Mi Historial de Registros</h1>
+
+      <div className="filter-buttons">
+        <button onClick={() => handleFilterChange('All')}>Todos</button>
+        <button onClick={() => handleFilterChange('Today')}>Hoy</button>
+        <button onClick={() => handleFilterChange('Past')}>Pasados</button>
+      </div>
 
       <h2>Crear un Registro</h2>
       <form onSubmit={createRecord}>
