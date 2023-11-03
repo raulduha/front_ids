@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './EditPage.css';
 
 function EditPage() {
   const { id } = useParams();
@@ -39,13 +40,12 @@ function EditPage() {
       console.error('Error al editar registro:', error);
     }
   };
-
   return (
     <div>
-      <h1>Editar Registro</h1>
+      <h1 style={{ color: 'white' }}>Editar Registro</h1>
       <form>
         <div className="form-group">
-          <label>Shift Assignment ID:</label>
+          <label style={{ color: 'white' }}>Shift Assignment ID:</label>
           <input
             type="text"
             value={editedRecord.shiftAssignment_id}
@@ -55,7 +55,7 @@ function EditPage() {
           />
         </div>
         <div className="form-group">
-          <label>Product ID:</label>
+          <label style={{ color: 'white' }}>Product ID:</label>
           <input
             type="text"
             value={editedRecord.product_id}
@@ -65,7 +65,7 @@ function EditPage() {
           />
         </div>
         <div className="form-group">
-          <label>Amount:</label>
+          <label style={{ color: 'white' }}>Amount:</label>
           <input
             type="text"
             value={editedRecord.amount}
@@ -74,12 +74,13 @@ function EditPage() {
             }
           />
         </div>
-        <button type="button" onClick={handleEdit}>
+        <button type="button" onClick={handleEdit} style={{ color: 'white' }}>
           Guardar Cambios
         </button>
       </form>
     </div>
   );
+  
 }
 
 export default EditPage;

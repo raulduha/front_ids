@@ -38,10 +38,10 @@ export function UserSignUpPage() {
 
   return (
     <div className="sign-up-page">
-      <h2>Registro</h2>
+      <h2 style={{ color: 'white' }}>Registro</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Nombre:</label>
+          <label style={{ color: 'white' }}>Nombre:</label>
           <input
             type="text"
             name="first_name"
@@ -51,7 +51,7 @@ export function UserSignUpPage() {
           />
         </div>
         <div className="form-group">
-          <label>Apellido:</label>
+          <label style={{ color: 'white' }}>Apellido:</label>
           <input
             type="text"
             name="last_name"
@@ -61,7 +61,7 @@ export function UserSignUpPage() {
           />
         </div>
         <div className="form-group">
-          <label>Correo Electrónico:</label>
+          <label style={{ color: 'white' }}>Correo Electrónico:</label>
           <input
             type="email"
             name="email"
@@ -71,7 +71,7 @@ export function UserSignUpPage() {
           />
         </div>
         <div className="form-group">
-          <label>Teléfono:</label>
+          <label style={{ color: 'white' }}>Teléfono:</label>
           <input
             type="text"
             name="phone"
@@ -81,7 +81,7 @@ export function UserSignUpPage() {
           />
         </div>
         <div className="form-group">
-          <label>Rol:</label>
+          <label style={{ color: 'white' }}>Rol:</label>
           <select
             name="role"
             value={formData.role}
@@ -96,7 +96,7 @@ export function UserSignUpPage() {
           </select>
         </div>
         <div className="form-group">
-          <label>Contraseña:</label>
+          <label style={{ color: 'white' }}>Contraseña:</label>
           <input
             type="password"
             name="password"
