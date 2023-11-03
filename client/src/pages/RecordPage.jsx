@@ -51,6 +51,9 @@ function RecordPage() {
       let response = await axios.get(`${baseURL}/productions/`);
       let filteredRecords = response.data;
   
+      // Ordenar registros de más nuevo a más antiguo
+      filteredRecords.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  
       if (user && (user.role === 0 || user.role === 1)) {
         // Filter records to show only those created by the authenticated user
         filteredRecords = filteredRecords.filter((record) => record.modified_by === user.id);
