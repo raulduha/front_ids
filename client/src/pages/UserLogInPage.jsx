@@ -31,10 +31,10 @@ export function UserLogInPage() {
 
   return (
     <div className="login-page">
-      <h2>Iniciar sesión</h2>
+      <h2 style={{ color: 'white' }}>Iniciar sesión</h2>
       <form onSubmit={handleLogin}>
         <div className="form-group">
-          <label>Email:</label>
+          <label style={{ color: 'white' }}>Email:</label>
           <input
             type="email"
             value={email}
@@ -43,7 +43,7 @@ export function UserLogInPage() {
           />
         </div>
         <div className="form-group">
-          <label>Contraseña:</label>
+          <label style={{ color: 'white' }}>Contraseña:</label>
           <input
             type="password"
             value={password}
