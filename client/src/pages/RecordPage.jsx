@@ -24,17 +24,7 @@ function RecordPage() {
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios
-      .get(`${baseURL}/products/`)
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error('Error al cargar productos:', error);
-      });
-  }, []);
+  
   useEffect(() => {
     axios
       .get(`${baseURL}/users/`)
@@ -45,6 +35,18 @@ function RecordPage() {
         console.error('Error al cargar usuarios:', error);
       });
   }, []);
+  
+  useEffect(() => {
+    axios
+      .get(`${baseURL}/products/`)
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar productos:', error);
+      });
+  }, []);
+  
 
   const loadRecords = async () => {
     try {
@@ -195,8 +197,10 @@ function RecordPage() {
   
 
   useEffect(() => {
+    if (user) {
     loadRecords();
-  }, []);
+    }
+  }, [user]);
 
   const userRole = user && user.role;
   const canEditAndDelete = userRole === 2 || userRole === 3 || userRole === 4;
