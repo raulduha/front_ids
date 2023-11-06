@@ -10,7 +10,6 @@ import RecordPage from './pages/RecordPage';
 import EditPage from './pages/EditPage';
 import { ToastContainer } from 'react-toastify'; // Paso 1: Importa las dependencias
 import 'react-toastify/dist/ReactToastify.css'; // Estilos de react-toastify
-
 function App() {
   return (
     <AuthProvider>

@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
-from .serializers import UserSerializer, MachineSerializer, ProductSerializer, ShiftSerializer, ShiftAssignmentSerializer, ProductionSerializer
-from .models import User, Machine, Product, Shift, ShiftAssignment, Production
+from .serializers import UserSerializer, MachineSerializer, ProductSerializer, ShiftSerializer, ShiftAssignmentSerializer, ProductionSerializer, StorageSerializer 
+from .models import User, Machine, Product, Shift, ShiftAssignment, Production, Storage
 
 #create your views here
 class UserView(viewsets.ModelViewSet):
@@ -62,3 +62,7 @@ class ShiftAssignmentView(viewsets.ModelViewSet):
 class ProductionView(viewsets.ModelViewSet):
     serializer_class = ProductionSerializer
     queryset = Production.objects.all()
+
+class StorageView(viewsets.ModelViewSet):
+    serializer_class = StorageSerializer
+    queryset = Storage.objects.all()
