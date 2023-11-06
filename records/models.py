@@ -106,3 +106,12 @@ class Production(models.Model):
 
     def __str__(self):
         return str(self.prod_id)
+
+class Storage(models.Model):
+    storage_id = models.AutoField(primary_key=True)
+    storage_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    production_assigned = models.ForeignKey(Production,on_delete=models.CASCADE)
+    amount = models.IntegerField()
+
+    def _str_(self):
+        return str(self.storage_id)

@@ -10,8 +10,9 @@ router.register(r"products", views.ProductView, "products")
 router.register(r"shifts", views.ShiftView, "shifts")
 router.register(r"shiftassignments", views.ShiftAssignmentView, "shiftassignments")
 router.register(r"productions", views.ProductionView, "productions")
-
+router.register(r"storage", views.StorageView, "storage")
 urlpatterns = [
     path("api/v1/", include(router.urls)),
     path("docs/", include_docs_urls(title="Records API"))
+
 ]
