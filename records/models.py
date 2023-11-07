@@ -110,8 +110,12 @@ class Production(models.Model):
 class Storage(models.Model):
     storage_id = models.AutoField(primary_key=True)
     storage_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    production_assigned = models.ForeignKey(Production,on_delete=models.CASCADE)
     amount = models.IntegerField()
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(default=datetime.now, editable=False)
+    modified_at = models.DateTimeField(auto_now=True)
+    modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_storage_units')
 
     def _str_(self):
         return str(self.storage_id)
