@@ -35,6 +35,14 @@ function NavBar() {
               </Link>
             </li>
           )}
+          {/* Aquí agregamos la condición para mostrar el enlace a Storage solo a los roles 1, 2 y 4 */}
+          {user && (user.role === 1 || user.role === 2 || user.role === 4) && (
+            <li className="nav-item">
+              <Link to="/storage" className="nav-link">
+                Storage
+              </Link>
+            </li>
+          )}
           {user ? (
             <>
               <li className="nav-item">
@@ -50,7 +58,7 @@ function NavBar() {
                 </li>
               )}
               <li className="nav-item">
-                <button className="nav-item" onClick={handleLogout}>
+                <button className="nav-link" onClick={handleLogout}>
                   Logout
                 </button>
               </li>
@@ -71,4 +79,3 @@ function NavBar() {
 }
 
 export default NavBar;
-
