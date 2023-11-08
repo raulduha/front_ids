@@ -319,11 +319,11 @@ function RecordPage() {
                 </span>
               </div>
               <div className="record-field">
-                <span className="record-label">Fecha de creacion:</span>
+                <span className="record-label">Fecha de creación:</span>
                 <span className="record-value">{record.date_created}</span>
               </div>
               <div className="record-field">
-                <span className="record-label">hora de creacion:</span>
+                <span className="record-label">Hora de creación:</span>
                 <span className="record-value">{record.time_created}</span>
               </div>
               
