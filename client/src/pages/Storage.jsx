@@ -42,13 +42,17 @@ function StoragePage() {
 
   // Function to load storage items from the API
   const loadStorageItems = async () => {
-    try {
-      const response = await axios.get(`${baseURL}/products`);
-      setStorageItems(response.data);
-    } catch (error) {
-      console.error('Error loading storage items:', error);
-    }
-  };
+  try {
+    const response = await axios.get(`${baseURL}/storage`);
+    // Sort items from newest to oldest by reversing the sort order
+    const sortedItems = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    setStorage(sortedItems);
+  } catch (error) {
+    console.error('Error loading storage items:', error);
+  }
+};
+
+  
   
 
   
@@ -71,7 +75,12 @@ function StoragePage() {
     try {
       const response = await axios.post(`${baseURL}/storage/`, storageData);
       toast.success('Storage item created successfully!');
-      setStorage([...storage, response.data]); // Update the storage state directly
+      
+      // Create a new array, add the new item, and sort it
+      const newStorageList = [...storage, response.data];
+      newStorageList.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      setStorage(newStorageList); // Update the storage state with the new sorted array
+      
       setNewStorageItem({
         product_id: '',
         quantity: '',
@@ -82,6 +91,7 @@ function StoragePage() {
       toast.error('Failed to create storage item.');
     }
   };
+  
   
   const handleDelete = async (storageId) => {
     // Ask for confirmation before deleting the item
