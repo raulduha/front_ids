@@ -322,10 +322,7 @@ function RecordPage() {
                 <span className="record-label">Created at:</span>
                 <span className="record-value">{record.created_at}</span>
               </div>
-              <div className="record-field">
-                <span className="record-label">Modified at:</span>
-                <span className="record-value">{record.modified_at}</span>
-              </div>
+              
             </div>
             {canEditAndDelete && (
               <div className="record-actions">
