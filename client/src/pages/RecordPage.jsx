@@ -10,7 +10,7 @@ function RecordPage() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState('All');
-
+  const getFullDateTime = (record) => `${record.date_created}T${record.time_created}`;
   const [newRecord, setNewRecord] = useState({
     shiftAssignment_id: '',
     product_id: '',
@@ -53,58 +53,67 @@ function RecordPage() {
       let response = await axios.get(`${baseURL}/productions/`);
       let filteredRecords = response.data;
   
-      // Ordenar registros de más nuevo a más antiguo
-      filteredRecords.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  
+      filteredRecords.sort((a, b) => {
+        // Concatena la fecha y la hora en una sola cadena
+        const dateTimeA = `${a.date_created}T${a.time_created}`;
+        const dateTimeB = `${b.date_created}T${b.time_created}`;
+      
+        // Crea objetos de fecha a partir de las cadenas concatenadas
+        const dateA = new Date(dateTimeA);
+        const dateB = new Date(dateTimeB);
+      
+        // Compara los objetos de fecha para ordenar de forma descendente
+        return dateB - dateA;
+      });
+      
+      
       if (user && (user.role === 0 || user.role === 1)) {
         // Filter records to show only those created by the authenticated user
         filteredRecords = filteredRecords.filter((record) => record.modified_by === user.id);
       }
   
       // Filter by startDate and endDate
-      if (startDate) {
-        const startDateTime = new Date(startDate).getTime();
-        filteredRecords = filteredRecords.filter((record) => {
-          const recordDateTime = new Date(record.created_at).getTime();
-          return recordDateTime >= startDateTime;
-        });
-      }
-  
-      if (endDate) {
-        const endDateTime = new Date(endDate).getTime();
-        filteredRecords = filteredRecords.filter((record) => {
-          const recordDateTime = new Date(record.created_at).getTime();
-          return recordDateTime <= endDateTime;
-        });
-      }
-  
-      // Filter by selected product
-      if (selectedProduct !== 'All') {
-        filteredRecords = filteredRecords.filter((record) => record.product_id.toString() === selectedProduct);
-      }
-  
-      // Apply the "Today" and "Past" filters (these are mutually exclusive with date filters)
-      if (!startDate && !endDate) {
-        if (filter === 'Today') {
-          const today = new Date().toLocaleDateString();
-          filteredRecords = filteredRecords.filter((record) => {
-            const createdAtDate = new Date(record.created_at);
-            return createdAtDate.toLocaleDateString() === today;
-          });
-        } else if (filter === 'Past') {
-          const today = new Date().toLocaleDateString();
-          filteredRecords = filteredRecords.filter((record) => {
-            const createdAtDate = new Date(record.created_at);
-            return createdAtDate.toLocaleDateString() !== today;
-          });
-        }
-      }
-  
-      setRecords(filteredRecords);
-    } catch (error) {
-      console.error('Error al cargar registros:', error);
+    if (startDate) {
+      const startDateTime = new Date(startDate).getTime();
+      filteredRecords = filteredRecords.filter((record) => {
+        const recordDateTime = new Date(getFullDateTime(record)).getTime();
+        return recordDateTime >= startDateTime;
+      });
     }
-  };
+
+    if (endDate) {
+      const endDateTime = new Date(endDate).getTime();
+      filteredRecords = filteredRecords.filter((record) => {
+        const recordDateTime = new Date(getFullDateTime(record)).getTime();
+        return recordDateTime <= endDateTime;
+      });
+    }
+    if (selectedProduct !== 'All') {
+      filteredRecords = filteredRecords.filter((record) => record.product_id.toString() === selectedProduct);
+    }
+
+    // Apply the "Today" and "Past" filters (these are mutually exclusive with date filters)
+    if (!startDate && !endDate) {
+      const todayStart = new Date().setHours(0, 0, 0, 0);
+      const todayEnd = new Date().setHours(23, 59, 59, 999);
+      if (filter === 'Today') {
+        filteredRecords = filteredRecords.filter((record) => {
+          const recordDateTime = new Date(getFullDateTime(record)).getTime();
+          return recordDateTime >= todayStart && recordDateTime <= todayEnd;
+        });
+      } else if (filter === 'Past') {
+        filteredRecords = filteredRecords.filter((record) => {
+          const recordDateTime = new Date(getFullDateTime(record)).getTime();
+          return recordDateTime < todayStart;
+        });
+      }
+    }
+
+    setRecords(filteredRecords);
+  } catch (error) {
+    console.error('Error al cargar registros:', error);
+  }
+};
   
   
   
@@ -319,8 +328,12 @@ function RecordPage() {
                 </span>
               </div>
               <div className="record-field">
-                <span className="record-label">Fecha de creacion:</span>
-                <span className="record-value">{record.created_at}</span>
+                <span className="record-label">Fecha de creación:</span>
+                <span className="record-value">{record.date_created}</span>
+              </div>
+              <div className="record-field">
+                <span className="record-label">Hora de creación:</span>
+                <span className="record-value">{record.time_created}</span>
               </div>
               
             </div>
