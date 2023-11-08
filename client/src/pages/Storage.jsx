@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 function StoragePage() {
   const [storageItems, setStorageItems] = useState([]);
@@ -19,6 +20,29 @@ function StoragePage() {
   const baseURL = 'http://localhost:8000/records/api/v1';
   const { user } = useAuth();
   const navigate = useNavigate();
+  // Function to handle deleting a storage item
+  const handleDeleteStorageItem = async (itemId) => {
+    try {
+      await axios.delete(`${baseURL}/storage/${itemId}`);
+      toast.success('Storage item deleted successfully!');
+      loadStorageItems(); // Reload storage items after deletion
+    } catch (error) {
+      console.error('Error deleting storage item:', error);
+      toast.error('Failed to delete storage item.');
+    }
+  };
+
+  // Function to handle editing a storage item
+  const handleEditStorageItem = async (item) => {
+    try {
+      await axios.put(`${baseURL}/storage/${item.id}`, item);
+      toast.success('Storage item updated successfully!');
+      loadStorageItems(); // Reload storage items after update
+    } catch (error) {
+      console.error('Error updating storage item:', error);
+      toast.error('Failed to update storage item.');
+    }
+  };
 
   // Load users and products on component mount
   useEffect(() => {
@@ -134,6 +158,8 @@ function StoragePage() {
               <span className="storage-label">Monto:</span>
               <span className="storage-value">{item.amount}</span>
             </div>
+            <button onClick={() => handleDeleteStorageItem(item.id)}>Delete</button>
+            <Link to={`/edit-storage/${item.id}`} className="button">Edit</Link>
             {/* ... display storage item fields ... */}
             {/* Add delete/edit functionality if needed */}
           </li>

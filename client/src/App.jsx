@@ -8,6 +8,7 @@ import NavBar from './pages/NavBar';
 import HomePage from './pages/HomePage';
 import RecordPage from './pages/RecordPage';
 import EditPage from './pages/EditPage';
+import EditStorage from './pages/EditStorage';
 import { ToastContainer } from 'react-toastify'; // Paso 1: Importa las dependencias
 import 'react-toastify/dist/ReactToastify.css'; // Estilos de react-toastify
 import Storage from './pages/Storage';
@@ -23,7 +24,8 @@ function App() {
           <Route path="/signup" element={<UserSignUpPage />} />
           <Route path="/storage" element={<Storage />} />
           <Route path="/register" element={<RecordPage />} />
-          
+
+          <Route path="/edit-storage/:id" element={<EditStorage />} />
           <Route path="/editar/:id" element={<EditPage />} />
         </Routes>
         <ToastContainer /> {/* Paso 2: Añade el componente ToastContainer */}
