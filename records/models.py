@@ -104,6 +104,22 @@ class Production(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_shift_assignments')
 
+    date_created = models.DateField(blank=True, null=True)  
+    time_created = models.TimeField(blank=True, null=True)  
+    date_modified = models.DateField(blank=True, null=True)  
+    time_modified = models.TimeField(blank=True, null=True)  
+
+    def save(self, *args, **kwargs):
+        if self.created_at:
+            self.date_created = self.created_at.date()
+            self.time_created = self.created_at.time()
+
+        if self.modified_at:
+            self.date_modified = self.modified_at.date()
+            self.time_modified = self.modified_at.time()
+
+        super(Production, self).save(*args, **kwargs)
+
     def __str__(self):
         return str(self.prod_id)
 
