@@ -47,7 +47,7 @@ function NavBar() {
             <>
               <li className="nav-item">
                 <Link to="/register" className="nav-link">
-                  Produccion
+                Producción
                 </Link>
               </li>
               {(user.role === 2 || user.role === 4) && (
@@ -59,7 +59,7 @@ function NavBar() {
               )}
               <li className="nav-item">
                 <button className="nav-link" onClick={handleLogout}>
-                  Cerrar sesion
+                 Cerrar sesión
                 </button>
               </li>
             </>
@@ -67,7 +67,7 @@ function NavBar() {
             <>
               <li className="nav-item">
                 <Link to="/login" className="nav-link">
-                  Iniciar sesion
+                 Iniciar sesión
                 </Link>
               </li>
             </>
