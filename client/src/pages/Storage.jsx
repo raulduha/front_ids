@@ -34,6 +34,7 @@ function StoragePage() {
         setProducts(productsResponse.data);
         const storageResponse = await axios.get(`${baseURL}/storage`);
         setStorage(storageResponse.data);
+        loadStorageItems();
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -111,21 +112,14 @@ function StoragePage() {
       <form onSubmit={handleCreateStorageItem}>
         <div className="form-group">
           <label htmlFor="product_id">Product ID:</label>
-          <select
+          <input
             id="product_id"
             type="text"
             value={newStorageItem.product_id}
             onChange={(e) =>
               setNewStorageItem({ ...newStorageItem, product_id: e.target.value })
             }
-          >
-            <option value="">Selecciona un producto</option>
-            {products.map((product) => (
-              <option key={product.product_id} value={product.product_id}>
-                {`${product.product_id} - ${product.brand}`}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <div className="form-group">
           <label htmlFor="quantity">Quantity:</label>
