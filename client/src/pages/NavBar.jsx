@@ -14,7 +14,7 @@ function NavBar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/'); // Redirect to the main page when clicking Logout
+    navigate('/');
   };
 
   return (
@@ -28,6 +28,16 @@ function NavBar() {
           <i className="fas fa-bars"></i>
         </div>
         <ul id="navbar" className={`navbar-nav ${mobileNavActive ? 'active' : ''}`}>
+          {/* Overview tab visible only to roles 2 and 4 */}
+          {user && (user.role === 2 || user.role === 4) && (
+            <li className="nav-item">
+              <Link to="/overview" className="nav-link">
+                Overview
+              </Link>
+            </li>
+          )}
+
+          {/* Existing tabs */}
           {user && (user.role === 2 || user.role === 4) && (
             <li className="nav-item">
               <Link to="/users" className="nav-link">
@@ -42,7 +52,6 @@ function NavBar() {
               </Link>
             </li>
           )}
-          {/* Condición actualizada para que solo los roles 0, 2 y 4 puedan ver Producción */}
           {user && (user.role === 0 || user.role === 2 || user.role === 4) && (
             <li className="nav-item">
               <Link to="/register" className="nav-link">

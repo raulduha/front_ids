@@ -12,6 +12,7 @@ import EditStorage from './pages/EditStorage';
 import { ToastContainer } from 'react-toastify'; // Paso 1: Importa las dependencias
 import 'react-toastify/dist/ReactToastify.css'; // Estilos de react-toastify
 import Storage from './pages/Storage';
+import Overview from './pages/Overview';
 function App() {
   return (
     <AuthProvider>
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/users" element={<UserPage />} />
+          <Route path="/overview" element={<Overview />} />
           <Route path="/login" element={<UserLogInPage />} />
           <Route path="/signup" element={<UserSignUpPage />} />
           <Route path="/storage" element={<Storage />} />
