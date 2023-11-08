@@ -33,32 +33,14 @@ function StoragePage() {
         const productsResponse = await axios.get(`${baseURL}/products`);
         setProducts(productsResponse.data);
         const storageResponse = await axios.get(`${baseURL}/storage`);
-        setStorage(storageResponse.data);
-        loadStorageItems();
+        const sortedItems = storageResponse.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setStorage(sortedItems);
       } catch (error) {
         console.error('Error loading data:', error);
       }
     };
 
     loadUsersAndProducts();
-  }, []);
-
-  // Function to load storage items from the API
-  const loadStorageItems = async () => {
-  try {
-    const response = await axios.get(`${baseURL}/storage`);
-    // Sort items from newest to oldest by reversing the sort order
-    const sortedItems = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    setStorage(sortedItems);
-  } catch (error) {
-    console.error('Error loading storage items:', error);
-  }
-};
-
-
-  // Call loadStorageItems on component mount
-  useEffect(() => {
-    loadStorageItems();
   }, []);
 
   const handleCreateStorageItem = async (e) => {
