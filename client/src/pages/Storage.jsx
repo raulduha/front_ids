@@ -89,7 +89,7 @@ function StoragePage() {
       try {
         await axios.delete(`${baseURL}/storage/${storageId}`);
         toast.success('Item deleted successfully');
-        setStorage(storage.filter(item => item.id !== storageId)); // Make sure 'item.id' is the correct identifier
+        setStorage(storage.filter(item => item.storage_id !== storageId)); // Make sure 'item.id' is the correct identifier
       } catch (error) {
         toast.error('Error deleting item');
         console.error('There was an error deleting the item:', error);
