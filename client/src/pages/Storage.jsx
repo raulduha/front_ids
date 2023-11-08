@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 function StoragePage() {
   const [storageItems, setStorageItems] = useState([]);
   const [products, setProducts] = useState([]);
+  const [storage, setStorage] = useState([]);
   const [users, setUsers] = useState([]);
   const [newStorageItem, setNewStorageItem] = useState({
     product_id: '',
@@ -27,6 +28,8 @@ function StoragePage() {
         setUsers(usersResponse.data);
         const productsResponse = await axios.get(`${baseURL}/products/`);
         setProducts(productsResponse.data);
+        const storageResponse = await axios.get(`${baseURL}/storage/`);
+        setProducts(storageResponse.data);
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -45,6 +48,8 @@ function StoragePage() {
     }
   };
 
+
+
   // Call loadStorageItems on component mount
   useEffect(() => {
     loadStorageItems();
@@ -61,7 +66,7 @@ function StoragePage() {
     };
 
     try {
-      await axios.post(`${baseURL}/items/`, storageData);
+      await axios.post(`${baseURL}/storage/`, storageData);
       toast.success('Storage item created successfully!');
       setNewStorageItem({
         product_id: '',
