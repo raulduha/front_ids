@@ -133,5 +133,5 @@ class Storage(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_storage_units')
 
-    def _str_(self):
+    def __str__(self):
         return str(self.storage_id)

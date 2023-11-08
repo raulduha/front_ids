@@ -1,11 +1,10 @@
 from django.contrib import admin
-from .models import User, Machine, Product, Shift, ShiftAssignment, Production,Storage
+from .models import User, Machine, Product, Shift, ShiftAssignment, Production, Storage
 
 class ProductionAdmin(admin.ModelAdmin):
-    list_display = ('prod_id', 'shiftAssignment_id', 'product_id', 'amount', 'date_created', 'time_created', 'date_modified', 'time_modified', 'modified_by', 'modified_at')
+    list_display = ('prod_id', 'shiftAssignment_id', 'product_id', 'amount', 'date_created', 'time_created', 'date_modified', 'time_modified', 'modified_by')
     list_filter = ('shiftAssignment_id', 'product_id', 'date_created', 'date_modified')
-    search_fields = ('prod_id', 'shiftAssignment_id__name', 'product_id__name', 'date_created', 'date_modified')
-
+    search_fields = ('prod_id', 'shiftAssignment_id__shift_name', 'product_id__brand', 'date_created', 'date_modified')
 
 # Register your models here.
 admin.site.register(User)
