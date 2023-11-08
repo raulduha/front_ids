@@ -31,7 +31,7 @@ function NavBar() {
           {user && (user.role === 2 || user.role === 4) && (
             <li className="nav-item">
               <Link to="/users" className="nav-link">
-                Users
+                Usuarios
               </Link>
             </li>
           )}
@@ -39,7 +39,7 @@ function NavBar() {
           {user && (user.role === 1 || user.role === 2 || user.role === 4) && (
             <li className="nav-item">
               <Link to="/storage" className="nav-link">
-                Storage
+                Bodega
               </Link>
             </li>
           )}
@@ -47,19 +47,19 @@ function NavBar() {
             <>
               <li className="nav-item">
                 <Link to="/register" className="nav-link">
-                  Records
+                  Produccion
                 </Link>
               </li>
               {(user.role === 2 || user.role === 4) && (
                 <li className="nav-item">
                   <Link to="/signup" className="nav-link">
-                    Sign up
+                    Registrar
                   </Link>
                 </li>
               )}
               <li className="nav-item">
                 <button className="nav-link" onClick={handleLogout}>
-                  Logout
+                  Cerrar sesion
                 </button>
               </li>
             </>
@@ -67,7 +67,7 @@ function NavBar() {
             <>
               <li className="nav-item">
                 <Link to="/login" className="nav-link">
-                  Login
+                  Iniciar sesion
                 </Link>
               </li>
             </>
