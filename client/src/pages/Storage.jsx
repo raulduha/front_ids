@@ -29,7 +29,7 @@ function StoragePage() {
         const productsResponse = await axios.get(`${baseURL}/products`);
         setProducts(productsResponse.data);
         const storageResponse = await axios.get(`${baseURL}/storage`);
-        setProducts(storageResponse.data);
+        setStorage(storageResponse.data);
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -110,8 +110,30 @@ function StoragePage() {
         <button type="submit">Add to Storage</button>
       </form>
       <ul className="storage-list">
-        {storageItems.map((item) => (
+        {storage.map((item) => (
           <li key={item.id} className="storage-item">
+            <div className="storage-field">
+              <span className="storage-label">Producto:</span>
+              <span className="storage-value">
+                {products.find((product) => product.product_id === item.product_id)?.brand}
+                </span>
+            </div>
+            <div className="storage-field">
+              <span className="storage-label">Tipo:</span>
+              <span className="storage-value">
+                {products.find((product) => product.product_id === item.product_id)?.type}
+                </span>
+            </div>
+            <div className="storage-field">
+              <span className="storage-label">Formato:</span>
+              <span className="storage-value">
+                {products.find((product) => product.product_id === item.product_id)?.format}
+                </span>
+            </div>
+            <div className="storage-field">
+              <span className="storage-label">Monto:</span>
+              <span className="storage-value">{item.amount}</span>
+            </div>
             {/* ... display storage item fields ... */}
             {/* Add delete/edit functionality if needed */}
           </li>
