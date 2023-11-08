@@ -16,7 +16,7 @@ function StoragePage() {
     modified_by: null,
   });
 
-  const baseURL = 'http://localhost:8000/storage/api/v1';
+  const baseURL = 'http://localhost:8000/records/api/v1';
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -24,11 +24,11 @@ function StoragePage() {
   useEffect(() => {
     const loadUsersAndProducts = async () => {
       try {
-        const usersResponse = await axios.get(`${baseURL}/users/`);
+        const usersResponse = await axios.get(`${baseURL}/users`);
         setUsers(usersResponse.data);
-        const productsResponse = await axios.get(`${baseURL}/products/`);
+        const productsResponse = await axios.get(`${baseURL}/products`);
         setProducts(productsResponse.data);
-        const storageResponse = await axios.get(`${baseURL}/storage/`);
+        const storageResponse = await axios.get(`${baseURL}/storage`);
         setProducts(storageResponse.data);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -41,7 +41,7 @@ function StoragePage() {
   // Function to load storage items from the API
   const loadStorageItems = async () => {
     try {
-      const response = await axios.get(`${baseURL}/items/`);
+      const response = await axios.get(`${baseURL}/products`);
       setStorageItems(response.data);
     } catch (error) {
       console.error('Error loading storage items:', error);
@@ -61,8 +61,9 @@ function StoragePage() {
     // Assuming the user is added to the storage item automatically on the server-side
     const storageData = {
       product_id: newStorageItem.product_id,
-      quantity: newStorageItem.quantity,
-      modified_by: user.id,
+      amount: newStorageItem.quantity,
+      storage_user_id: user.id,
+      modified_by: null,
     };
 
     try {
