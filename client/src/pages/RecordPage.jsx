@@ -53,9 +53,20 @@ function RecordPage() {
       let response = await axios.get(`${baseURL}/productions/`);
       let filteredRecords = response.data;
   
-      // Ordenar registros de más nuevo a más antiguo
-      filteredRecords.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  
+      filteredRecords.sort((a, b) => {
+        // Concatena la fecha y la hora en una sola cadena
+        const dateTimeA = `${a.date_created}T${a.time_created}`;
+        const dateTimeB = `${b.date_created}T${b.time_created}`;
+      
+        // Crea objetos de fecha a partir de las cadenas concatenadas
+        const dateA = new Date(dateTimeA);
+        const dateB = new Date(dateTimeB);
+      
+        // Compara los objetos de fecha para ordenar de forma descendente
+        return dateB - dateA;
+      });
+      
+      
       if (user && (user.role === 0 || user.role === 1)) {
         // Filter records to show only those created by the authenticated user
         filteredRecords = filteredRecords.filter((record) => record.modified_by === user.id);
