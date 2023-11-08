@@ -52,10 +52,6 @@ function StoragePage() {
   }
 };
 
-  
-  
-
-  
 
   // Call loadStorageItems on component mount
   useEffect(() => {
@@ -161,7 +157,7 @@ function StoragePage() {
               <span className="storage-label">Monto:</span>
               <span className="storage-value">{item.amount}</span>
             </div>
-            (user.role === 2 || user.role === 4) && 
+            {(user.role === 2 || user.role === 4) && 
               <>
 
                 <button onClick={() => handleDelete(item.storage_id)}>Delete</button>
@@ -169,7 +165,7 @@ function StoragePage() {
 
                 <button onClick={() => navigate(`/edit-storage/${item.storage_id}`)}>Edit</button>
               </>
-          </li>
+}</li>
         ))}
       </ul>
     </div>
