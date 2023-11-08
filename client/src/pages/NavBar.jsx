@@ -35,7 +35,6 @@ function NavBar() {
               </Link>
             </li>
           )}
-          {/* Aquí agregamos la condición para mostrar el enlace a Storage solo a los roles 1, 2 y 4 */}
           {user && (user.role === 1 || user.role === 2 || user.role === 4) && (
             <li className="nav-item">
               <Link to="/storage" className="nav-link">
@@ -43,13 +42,16 @@ function NavBar() {
               </Link>
             </li>
           )}
+          {/* Condición actualizada para que solo los roles 0, 2 y 4 puedan ver Producción */}
+          {user && (user.role === 0 || user.role === 2 || user.role === 4) && (
+            <li className="nav-item">
+              <Link to="/register" className="nav-link">
+                Producción
+              </Link>
+            </li>
+          )}
           {user ? (
             <>
-              <li className="nav-item">
-                <Link to="/register" className="nav-link">
-                Producción
-                </Link>
-              </li>
               {(user.role === 2 || user.role === 4) && (
                 <li className="nav-item">
                   <Link to="/signup" className="nav-link">
@@ -59,7 +61,7 @@ function NavBar() {
               )}
               <li className="nav-item">
                 <button className="nav-link" onClick={handleLogout}>
-                 Cerrar sesión
+                  Cerrar sesión
                 </button>
               </li>
             </>
@@ -67,7 +69,7 @@ function NavBar() {
             <>
               <li className="nav-item">
                 <Link to="/login" className="nav-link">
-                 Iniciar sesión
+                  Iniciar sesión
                 </Link>
               </li>
             </>
