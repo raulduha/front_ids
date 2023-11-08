@@ -1,0 +1,28 @@
+.overview {
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  .overview h1 {
+    text-align: center;
+  }
+  
+  .overview-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: #333;
+  }
+  
+  .overview-table th,
+  .overview-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .overview-table th {
+    background-color: #4CAF50;
+    color: white;
+  }
+  

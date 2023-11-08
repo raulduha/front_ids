@@ -11,6 +11,8 @@ function StoragePage() {
   const [products, setProducts] = useState([]);
   const [storage, setStorage] = useState([]);
   const [users, setUsers] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
+
   const [newStorageItem, setNewStorageItem] = useState({
     product_id: '',
     quantity: '',
@@ -20,31 +22,9 @@ function StoragePage() {
   const baseURL = 'http://localhost:8000/records/api/v1';
   const { user } = useAuth();
   const navigate = useNavigate();
-  // Function to handle deleting a storage item
-  const handleDeleteStorageItem = async (itemId) => {
-    try {
-      await axios.delete(`${baseURL}/storage/${itemId}`);
-      toast.success('Storage item deleted successfully!');
-      loadStorageItems(); // Reload storage items after deletion
-    } catch (error) {
-      console.error('Error deleting storage item:', error);
-      toast.error('Failed to delete storage item.');
-    }
-  };
+  
 
-  // Function to handle editing a storage item
-  const handleEditStorageItem = async (item) => {
-    try {
-      await axios.put(`${baseURL}/storage/${item.id}`, item);
-      toast.success('Storage item updated successfully!');
-      loadStorageItems(); // Reload storage items after update
-    } catch (error) {
-      console.error('Error updating storage item:', error);
-      toast.error('Failed to update storage item.');
-    }
-  };
-
-  // Load users and products on component mount
+// Load users and products on component mount
   useEffect(() => {
     const loadUsersAndProducts = async () => {
       try {
@@ -64,14 +44,15 @@ function StoragePage() {
 
   // Function to load storage items from the API
   const loadStorageItems = async () => {
-    try {
-      const response = await axios.get(`${baseURL}/products`);
-      setStorageItems(response.data);
-    } catch (error) {
-      console.error('Error loading storage items:', error);
-    }
-  };
-
+  try {
+    const response = await axios.get(`${baseURL}/storage`);
+    // Sort items from newest to oldest by reversing the sort order
+    const sortedItems = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    setStorage(sortedItems);
+  } catch (error) {
+    console.error('Error loading storage items:', error);
+  }
+};
 
 
   // Call loadStorageItems on component mount
@@ -81,30 +62,49 @@ function StoragePage() {
 
   const handleCreateStorageItem = async (e) => {
     e.preventDefault();
-
-    // Assuming the user is added to the storage item automatically on the server-side
+    
     const storageData = {
       product_id: newStorageItem.product_id,
       amount: newStorageItem.quantity,
       storage_user_id: user.id,
       modified_by: null,
     };
-
+    
     try {
-      await axios.post(`${baseURL}/storage/`, storageData);
+      const response = await axios.post(`${baseURL}/storage/`, storageData);
       toast.success('Storage item created successfully!');
+      
+      // Create a new array, add the new item, and sort it
+      const newStorageList = [...storage, response.data];
+      newStorageList.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      setStorage(newStorageList); // Update the storage state with the new sorted array
+      
       setNewStorageItem({
         product_id: '',
         quantity: '',
         modified_by: null,
       });
-      loadStorageItems();
     } catch (error) {
       console.error('Error creating storage item:', error);
       toast.error('Failed to create storage item.');
     }
   };
-
+  
+  const handleDelete = async (storageId) => {
+    // Ask for confirmation before deleting the item
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      try {
+        await axios.delete(`${baseURL}/storage/${storageId}`);
+        toast.success('Item deleted successfully');
+        setStorage(storage.filter(item => item.storage_id !== storageId)); // Make sure 'item.id' is the correct identifier
+      } catch (error) {
+        toast.error('Error deleting item');
+        console.error('There was an error deleting the item:', error);
+      }
+    }
+  };
+  
+  
   return (
     <div className="storage-page">
       <h1>Storage Management</h1>
@@ -158,11 +158,15 @@ function StoragePage() {
               <span className="storage-label">Monto:</span>
               <span className="storage-value">{item.amount}</span>
             </div>
-            <button onClick={() => handleDeleteStorageItem(item.id)}>Delete</button>
-            <Link to={`/edit-storage/${item.id}`} className="button">Edit</Link>
-            {/* ... display storage item fields ... */}
-            {/* Add delete/edit functionality if needed */}
-          </li>
+            {(user.role === 2 || user.role === 4) && 
+              <>
+
+                <button onClick={() => handleDelete(item.storage_id)}>Delete</button>
+
+
+                <button onClick={() => navigate(`/edit-storage/${item.storage_id}`)}>Edit</button>
+              </>
+}</li>
         ))}
       </ul>
     </div>
