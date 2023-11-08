@@ -8,7 +8,7 @@ const EditStorage = () => {
   const [storageItem, setStorageItem] = useState({
     product_id: '',
     quantity: '',
-    modified_by: null,
+    modified_at: '',
   });
   const { storageId } = useParams();
   const navigate = useNavigate();
@@ -37,8 +37,9 @@ const EditStorage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const editedData = { ...storageItem, modified_at: new Date().toISOString() };
     try {
-      await axios.put(`${baseURL}/storage/${storageId}`, storageItem);
+      await axios.put(`${baseURL}/storage/${storageId}/`, editedData);
       toast.success('Storage item updated successfully!');
       navigate('/storage');
     } catch (error) {
