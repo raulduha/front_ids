@@ -10,15 +10,15 @@ function Cards() {
         <div className='cards__wrapper'>
           <ul className='cards__items'>
             <CardItem
-              src='/fabrica.avif'
-              text='fabrica foto ejemplo 1'
+              src='/acm.jpg'
+              text='ACM'
               label='Fabricas'
               
             />
             <CardItem
               src='/datafusion.png'
-              text='fabrica foto ejemplo 2'
-              label='Fabricas'
+              text='logo datafusion'
+              label='datafusion'
               
             />
           </ul>
@@ -30,15 +30,15 @@ function Cards() {
               
             />
             <CardItem
-              src='/fabrica.avif'
-              text='fabrica foto ejemplo 3'
-              label='Fabricas'
+              src='/falus.jpg'
+              text='Maquina Falus'
+              label='Maquinas'
               
             />
             <CardItem
-              src='/fabrica.avif'
-              text='fabrica foto ejemplo 5'
-              label='Fabricas'
+              src='/prensados.jpg'
+              text='Maquina prensados'
+              label='Maquina'
               
             />
           </ul>

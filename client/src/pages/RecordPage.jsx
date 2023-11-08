@@ -303,25 +303,13 @@ function RecordPage() {
           <li key={record.prod_id} className="record-item">
             <div className="record-info">
               <div className="record-field">
-                <span className="record-label">Registro ID:</span>
-                <span className="record-value">{record.prod_id}</span>
-              </div>
-              <div className="record-field">
-                <span className="record-label">Shift Assignment ID:</span>
-                <span className="record-value">{record.shiftAssignment_id}</span>
-              </div>
-              <div className="record-field">
-                <span className="record-label">Product ID:</span>
-                <span className="record-value">{record.product_id}</span>
-              </div>
-              <div className="record-field">
-                <span className="record-label">Product Brand:</span>
+                <span className="record-label">Marca de producto:</span>
                 <span className="record-value">
                   {products.find((product) => product.product_id === record.product_id)?.brand}
                 </span>
               </div>
               <div className="record-field">
-                <span className="record-label">Amount:</span>
+                <span className="record-label">Monto:</span>
                 <span className="record-value">{record.amount}</span>
               </div>
               <div className="record-field">
@@ -331,13 +319,10 @@ function RecordPage() {
                 </span>
               </div>
               <div className="record-field">
-                <span className="record-label">Created at:</span>
+                <span className="record-label">Fecha de creacion:</span>
                 <span className="record-value">{record.created_at}</span>
               </div>
-              <div className="record-field">
-                <span className="record-label">Modified at:</span>
-                <span className="record-value">{record.modified_at}</span>
-              </div>
+              
             </div>
             {canEditAndDelete && (
               <div className="record-actions">

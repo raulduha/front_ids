@@ -42,4 +42,4 @@ class ProductionSerializer(serializers.ModelSerializer):
 class StorageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Storage
-        fields = ("storage_id", "storage_user_id", "production_assigned","amount")
+        fields = ("storage_id", "storage_user_id", "product_id","amount","created_at","modified_at","modified_by")

@@ -1,0 +1,142 @@
+/* StoragePage.css */
+
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .storage-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+  
+  .storage-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .storage-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .storage-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .storage-field {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .storage-label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .storage-value {
+    font-weight: normal;
+    color: #333;
+  }
+  
+  .storage-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+  button.delete {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  button.delete:hover {
+    background-color: #c0392b;
+  }
+  
+  button:not(.delete) {
+    background-color: #2ecc71;
+    color: white;
+  }
+  
+  button:not(.delete):hover {
+    background-color: #27ae60;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  @media (max-width: 600px) {
+    .storage-field {
+        flex-direction: column;
+        align-items: start;
+    }
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  select {
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    color: #000;
+    background-color: #fff;
+  }
+  
+  label {
+    color: #000;
+    display: block;
+    margin-top: 10px;
+  }
+  
