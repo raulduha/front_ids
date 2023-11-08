@@ -7,7 +7,7 @@ import './EditStorage.css';
 const EditStorage = () => {
   const [storageItem, setStorageItem] = useState({
     product_id: '',
-    quantity: '',
+    amount: '',
     modified_at: '',
   });
   const { storageId } = useParams();
@@ -66,11 +66,11 @@ const EditStorage = () => {
         <div className="form-field">
           <label htmlFor="quantity" className="form-label">Quantity</label>
           <input
-            id="quantity"
-            name="quantity"
+            id="amount"
+            name="amount"
             type="number"
             className="form-input"
-            value={storageItem.quantity}
+            value={storageItem.amount}
             onChange={handleInputChange}
           />
         </div>
