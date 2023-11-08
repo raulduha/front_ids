@@ -30,11 +30,6 @@ class ShiftAssignmentSerializer(serializers.ModelSerializer):
         fields = ("assignment_id", "user_id", "shift_id", "machine_id", "assignment_date")
 
 class ProductionSerializer(serializers.ModelSerializer):
-    date_created = serializers.DateField(source='date_created', read_only=True)
-    time_created = serializers.TimeField(source='time_created', read_only=True)
-    date_modified = serializers.DateField(source='date_modified', read_only=True)
-    time_modified = serializers.TimeField(source='time_modified', read_only=True)
-
     class Meta:
         model = Production
         fields = ("prod_id", "shiftAssignment_id", "product_id", "amount", "date_created", "time_created", "date_modified", "time_modified", "modified_by")
