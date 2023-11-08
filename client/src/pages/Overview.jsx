@@ -56,7 +56,7 @@ const Overview = () => {
             return (
               <tr key={product.product_id}>
                 <td>{product.product_id}</td>
-                <td>{product.name}</td>
+                <td>{product.brand} - {product.type} - {product.format}</td>
                 <td>{totalProduction}</td>
                 <td>{totalStorage}</td>
               </tr>
