@@ -1,79 +1,80 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../components/AuthContext';
 import { toast } from 'react-toastify';
+import './EditStorage.css';
 
-
-const EditStorage = ({ storageId, onUpdate }) => {
-  const [storageItem, setStorageItem] = useState(null);
-  const { user } = useAuth();
+const EditStorage = () => {
+  const [storageItem, setStorageItem] = useState({
+    product_id: '',
+    quantity: '',
+    modified_by: null,
+  });
+  const { storageId } = useParams();
+  const navigate = useNavigate();
   const baseURL = 'http://localhost:8000/records/api/v1';
 
   useEffect(() => {
-    // Fetch the storage item when the component mounts
     const fetchStorageItem = async () => {
       try {
         const response = await axios.get(`${baseURL}/storage/${storageId}`);
         setStorageItem(response.data);
       } catch (error) {
         console.error('Error fetching storage item:', error);
+        toast.error('Error fetching storage item details.');
       }
     };
 
-    fetchStorageItem();
+    if (storageId) {
+      fetchStorageItem();
+    }
   }, [storageId]);
 
-  const handleEdit = async () => {
-    if (![2, 4].includes(user.role)) {
-      toast.error('You do not have permission to edit storage items.');
-      return;
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setStorageItem({ ...storageItem, [name]: value });
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       await axios.put(`${baseURL}/storage/${storageId}`, storageItem);
       toast.success('Storage item updated successfully!');
-      onUpdate(); // Call the parent update function to refresh the list
+      navigate('/storage');
     } catch (error) {
       console.error('Error updating storage item:', error);
-      toast.error('Failed to update storage item.');
+      toast.error('Error updating storage item.');
     }
   };
-
-  const handleDelete = async () => {
-    if (![2, 4].includes(user.role)) {
-      toast.error('You do not have permission to delete storage items.');
-      return;
-    }
-
-    try {
-      await axios.delete(`${baseURL}/storage/${storageId}`);
-      toast.success('Storage item deleted successfully!');
-      onUpdate(); // Call the parent update function to refresh the list
-    } catch (error) {
-      console.error('Error deleting storage item:', error);
-      toast.error('Failed to delete storage item.');
-    }
-  };
-
-  if (!storageItem) {
-    return <p>Loading...</p>;
-  }
 
   return (
-    <div>
-      {/* Form for editing storage item */}
-      <input
-        type="text"
-        value={storageItem.product_id}
-        onChange={(e) => setStorageItem({ ...storageItem, product_id: e.target.value })}
-      />
-      <input
-        type="number"
-        value={storageItem.quantity}
-        onChange={(e) => setStorageItem({ ...storageItem, quantity: e.target.value })}
-      />
-      <button onClick={handleEdit}>Save Changes</button>
-      <button onClick={handleDelete}>Delete</button>
+    <div className="edit-storage-container">
+      <h2 className="edit-storage-title">Edit Storage Item</h2>
+      <form className="edit-storage-form" onSubmit={handleSubmit}>
+        <div className="form-field">
+          <label htmlFor="product_id" className="form-label">Product ID</label>
+          <input
+            id="product_id"
+            name="product_id"
+            type="text"
+            className="form-input"
+            value={storageItem.product_id}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-field">
+          <label htmlFor="quantity" className="form-label">Quantity</label>
+          <input
+            id="quantity"
+            name="quantity"
+            type="number"
+            className="form-input"
+            value={storageItem.quantity}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button type="submit" className="submit-btn">Update Storage Item</button>
+      </form>
     </div>
   );
 };

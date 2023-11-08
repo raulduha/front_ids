@@ -11,6 +11,8 @@ function StoragePage() {
   const [products, setProducts] = useState([]);
   const [storage, setStorage] = useState([]);
   const [users, setUsers] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
+
   const [newStorageItem, setNewStorageItem] = useState({
     product_id: '',
     quantity: '',
@@ -87,7 +89,6 @@ function StoragePage() {
       toast.error('Failed to create storage item.');
     }
   };
-  
   
   const handleDelete = async (storageId) => {
     // Ask for confirmation before deleting the item

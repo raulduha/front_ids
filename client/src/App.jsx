@@ -25,7 +25,9 @@ function App() {
           <Route path="/storage" element={<Storage />} />
           <Route path="/register" element={<RecordPage />} />
 
-          <Route path="/edit-storage/:id" element={<EditStorage />} />
+          <Route path="/edit-storage/:storageId" element={<EditStorage />} />
+
+
           <Route path="/editar/:id" element={<EditPage />} />
         </Routes>
         <ToastContainer /> {/* Paso 2: Añade el componente ToastContainer */}
