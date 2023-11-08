@@ -10,7 +10,7 @@ function RecordPage() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState('All');
-
+  const getFullDateTime = (record) => `${record.date_created}T${record.time_created}`;
   const [newRecord, setNewRecord] = useState({
     shiftAssignment_id: '',
     product_id: '',
@@ -73,49 +73,47 @@ function RecordPage() {
       }
   
       // Filter by startDate and endDate
-      if (startDate) {
-        const startDateTime = new Date(startDate).getTime();
-        filteredRecords = filteredRecords.filter((record) => {
-          const recordDateTime = new Date(record.created_at).getTime();
-          return recordDateTime >= startDateTime;
-        });
-      }
-  
-      if (endDate) {
-        const endDateTime = new Date(endDate).getTime();
-        filteredRecords = filteredRecords.filter((record) => {
-          const recordDateTime = new Date(record.created_at).getTime();
-          return recordDateTime <= endDateTime;
-        });
-      }
-  
-      // Filter by selected product
-      if (selectedProduct !== 'All') {
-        filteredRecords = filteredRecords.filter((record) => record.product_id.toString() === selectedProduct);
-      }
-  
-      // Apply the "Today" and "Past" filters (these are mutually exclusive with date filters)
-      if (!startDate && !endDate) {
-        if (filter === 'Today') {
-          const today = new Date().toLocaleDateString();
-          filteredRecords = filteredRecords.filter((record) => {
-            const createdAtDate = new Date(record.created_at);
-            return createdAtDate.toLocaleDateString() === today;
-          });
-        } else if (filter === 'Past') {
-          const today = new Date().toLocaleDateString();
-          filteredRecords = filteredRecords.filter((record) => {
-            const createdAtDate = new Date(record.created_at);
-            return createdAtDate.toLocaleDateString() !== today;
-          });
-        }
-      }
-  
-      setRecords(filteredRecords);
-    } catch (error) {
-      console.error('Error al cargar registros:', error);
+    if (startDate) {
+      const startDateTime = new Date(startDate).getTime();
+      filteredRecords = filteredRecords.filter((record) => {
+        const recordDateTime = new Date(getFullDateTime(record)).getTime();
+        return recordDateTime >= startDateTime;
+      });
     }
-  };
+
+    if (endDate) {
+      const endDateTime = new Date(endDate).getTime();
+      filteredRecords = filteredRecords.filter((record) => {
+        const recordDateTime = new Date(getFullDateTime(record)).getTime();
+        return recordDateTime <= endDateTime;
+      });
+    }
+    if (selectedProduct !== 'All') {
+      filteredRecords = filteredRecords.filter((record) => record.product_id.toString() === selectedProduct);
+    }
+
+    // Apply the "Today" and "Past" filters (these are mutually exclusive with date filters)
+    if (!startDate && !endDate) {
+      const todayStart = new Date().setHours(0, 0, 0, 0);
+      const todayEnd = new Date().setHours(23, 59, 59, 999);
+      if (filter === 'Today') {
+        filteredRecords = filteredRecords.filter((record) => {
+          const recordDateTime = new Date(getFullDateTime(record)).getTime();
+          return recordDateTime >= todayStart && recordDateTime <= todayEnd;
+        });
+      } else if (filter === 'Past') {
+        filteredRecords = filteredRecords.filter((record) => {
+          const recordDateTime = new Date(getFullDateTime(record)).getTime();
+          return recordDateTime < todayStart;
+        });
+      }
+    }
+
+    setRecords(filteredRecords);
+  } catch (error) {
+    console.error('Error al cargar registros:', error);
+  }
+};
   
   
   
