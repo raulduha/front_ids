@@ -4,19 +4,20 @@ import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
 function RecordPage() {
   const [records, setRecords] = useState([]);
-  const [filter, setFilter] = useState('All'); // Default filter is 'All'
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState('All');
+  const [sortOrder, setSortOrder] = useState('desc'); // Default sort order is descending
   const getFullDateTime = (record) => `${record.date_created}T${record.time_created}`;
   const [newRecord, setNewRecord] = useState({
     shiftAssignment_id: '',
     product_id: '',
     amount: '',
-    modified_by: null, // Agrega la propiedad modified_by
-    modified_by_name: null, // Agrega la propiedad modified_by_name
+    modified_by: null,
+    modified_by_name: null,
   });
 
   const baseURL = 'http://localhost:8000/records/api/v1';
@@ -24,7 +25,7 @@ function RecordPage() {
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     axios
       .get(`${baseURL}/users/`)
@@ -35,7 +36,7 @@ function RecordPage() {
         console.error('Error al cargar usuarios:', error);
       });
   }, []);
-  
+
   useEffect(() => {
     axios
       .get(`${baseURL}/products/`)
@@ -46,91 +47,53 @@ function RecordPage() {
         console.error('Error al cargar productos:', error);
       });
   }, []);
-  
 
   const loadRecords = async () => {
     try {
       let response = await axios.get(`${baseURL}/productions/`);
       let filteredRecords = response.data;
-  
+
       filteredRecords.sort((a, b) => {
-        // Concatena la fecha y la hora en una sola cadena
         const dateTimeA = `${a.date_created}T${a.time_created}`;
         const dateTimeB = `${b.date_created}T${b.time_created}`;
-      
-        // Crea objetos de fecha a partir de las cadenas concatenadas
         const dateA = new Date(dateTimeA);
         const dateB = new Date(dateTimeB);
-      
-        // Compara los objetos de fecha para ordenar de forma descendente
-        return dateB - dateA;
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
       });
-      
-      
-      if (user && (user.role === 0 || user.role === 1)) {
-        // Filter records to show only those created by the authenticated user
-        filteredRecords = filteredRecords.filter((record) => record.modified_by === user.id);
-      }
-  
-      // Filter by startDate and endDate
-    if (startDate) {
-      const startDateTime = new Date(startDate).getTime();
-      filteredRecords = filteredRecords.filter((record) => {
-        const recordDateTime = new Date(getFullDateTime(record)).getTime();
-        return recordDateTime >= startDateTime;
-      });
-    }
 
-    if (endDate) {
-      const endDateTime = new Date(endDate).getTime();
-      filteredRecords = filteredRecords.filter((record) => {
-        const recordDateTime = new Date(getFullDateTime(record)).getTime();
-        return recordDateTime <= endDateTime;
-      });
-    }
-    if (selectedProduct !== 'All') {
-      filteredRecords = filteredRecords.filter((record) => record.product_id.toString() === selectedProduct);
-    }
-
-    // Apply the "Today" and "Past" filters (these are mutually exclusive with date filters)
-    if (!startDate && !endDate) {
-      const todayStart = new Date().setHours(0, 0, 0, 0);
-      const todayEnd = new Date().setHours(23, 59, 59, 999);
-      if (filter === 'Today') {
+      if (startDate) {
+        const startDateTime = new Date(startDate).getTime();
         filteredRecords = filteredRecords.filter((record) => {
           const recordDateTime = new Date(getFullDateTime(record)).getTime();
-          return recordDateTime >= todayStart && recordDateTime <= todayEnd;
-        });
-      } else if (filter === 'Past') {
-        filteredRecords = filteredRecords.filter((record) => {
-          const recordDateTime = new Date(getFullDateTime(record)).getTime();
-          return recordDateTime < todayStart;
+          return recordDateTime >= startDateTime;
         });
       }
-    }
 
-    setRecords(filteredRecords);
-  } catch (error) {
-    console.error('Error al cargar registros:', error);
-  }
-};
-  
-  
-  
-  const handleFilterChange = (newFilter) => {
-    // Update the filter state immediately
-    setFilter(newFilter);
+      if (endDate) {
+        const endDateTime = new Date(endDate).getTime();
+        filteredRecords = filteredRecords.filter((record) => {
+          const recordDateTime = new Date(getFullDateTime(record)).getTime();
+          return recordDateTime <= endDateTime;
+        });
+      }
+
+      if (selectedProduct !== 'All') {
+        filteredRecords = filteredRecords.filter((record) => record.product_id.toString() === selectedProduct);
+      }
+
+      setRecords(filteredRecords);
+    } catch (error) {
+      console.error('Error al cargar registros:', error);
+    }
   };
-  
+
   useEffect(() => {
     loadRecords();
-  }, [filter, startDate, endDate, selectedProduct]);
-  
+  }, [startDate, endDate, selectedProduct, sortOrder]);
 
   const handleDelete = async (record) => {
     const isConfirmed = window.confirm("¿Estás seguro de que deseas eliminar este registro?");
     if (!isConfirmed) return;
-
 
     try {
       await axios.delete(`${baseURL}/productions/${record.prod_id}`);
@@ -142,13 +105,11 @@ function RecordPage() {
       toast.error('Error al eliminar el registro.');
     }
   };
-  
-  
 
   const handleEdit = async (record) => {
     const isConfirmed = window.confirm("¿Estás seguro de que deseas editar este registro?");
     if (!isConfirmed) return;
-  
+
     try {
       const response = await axios.put(
         `${baseURL}/productions/${record.prod_id}/`,
@@ -163,17 +124,13 @@ function RecordPage() {
       toast.error('Error al editar registro.');
     }
   };
-  
-  
 
   const createRecord = async (e) => {
     e.preventDefault();
-    
-    // Verifica que el usuario esté autenticado
+
     if (user && user.id) {
       const now = new Date();
-      const formattedTimestamp = now.toLocaleString(); 
-      // Crea un nuevo registro con el ID de usuario
+      const formattedTimestamp = now.toLocaleString();
       const newRecordData = {
         shiftAssignment_id: newRecord.shiftAssignment_id,
         product_id: newRecord.product_id,
@@ -183,12 +140,11 @@ function RecordPage() {
         created_at: formattedTimestamp,
         modified_at: formattedTimestamp,
       };
-    
+
       try {
         const response = await axios.post(`${baseURL}/productions/`, newRecordData);
         console.log('Registro creado:', response.data);
         loadRecords();
-        // Limpia los campos del formulario
         setNewRecord({
           shiftAssignment_id: '',
           product_id: '',
@@ -196,33 +152,29 @@ function RecordPage() {
           modified_by: null,
           modified_by_name: null,
         });
-        toast.success('Registro creado con éxito!'); // Notificación de éxito
+        toast.success('Registro creado con éxito!');
       } catch (error) {
         console.error('Error al crear registro:', error);
-        toast.error('Error al crear registro.'); // Notificación de error
+        toast.error('Error al crear registro.');
       }
     }
   };
-  
 
   useEffect(() => {
     if (user) {
-    loadRecords();
+      loadRecords();
     }
   }, [user]);
 
   const userRole = user && user.role;
   const canEditAndDelete = userRole === 2 || userRole === 3 || userRole === 4;
-  // Filter records to show only those belonging to the logged-in user
   const filteredRecords = records.filter(
     (record) => record.modified_by_name === `${user.first_name} ${user.last_name}`
   );
+
   return (
     <div className="record-page">
       <h1>Mi Historial de Registros</h1>
-
-      
-
 
       <h2>Crear un Registro</h2>
       <form onSubmit={createRecord}>
@@ -267,46 +219,64 @@ function RecordPage() {
         </div>
         <button type="submit">Crear Registro</button>
       </form>
-      {userRole === 0 || userRole === 1 ? (
-        <div className="filter-buttons">
-          <button onClick={() => handleFilterChange('All')}>Todos</button>
-          <button onClick={() => handleFilterChange('Today')}>Hoy</button>
-          <button onClick={() => handleFilterChange('Past')}>Pasados</button>
+
+      {userRole === 2 || userRole === 3 || userRole === 4 || userRole === 0? (
+        <div className="filter-section">
+          <label>
+            Fecha inicio:
+            <input
+              type="date"
+              value={startDate || ''}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </label>
+          <label>
+            Fecha término:
+            <input
+              type="date"
+              value={endDate || ''}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </label>
+          <label>
+            Producto:
+            <select
+              value={selectedProduct}
+              onChange={(e) => setSelectedProduct(e.target.value)}
+            >
+              <option value="All">Todos</option>
+              {products.map((product) => (
+                <option key={product.product_id} value={product.product_id}>
+                  {product.brand}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Ordenar:
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <option value="desc">Más nuevos primero</option>
+              <option value="asc">Más antiguos primero</option>
+            </select>
+          </label>
+          <button onClick={loadRecords}>Buscar</button>
+          <button
+            onClick={() => {
+              setStartDate(null);
+              setEndDate(null);
+              setSelectedProduct('All');
+              setSortOrder('desc');
+              loadRecords(); // Agregado para limpiar los registros al presionar "Limpiar filtros"
+            }}
+          >
+            Limpiar filtros
+          </button>
         </div>
       ) : null}
-      {userRole === 2 || userRole === 3 || userRole === 4 ? (
-  <div className="filter-section">
-      <label>
-      Fecha inicio:
-      <input 
-        type="date" 
-        value={startDate || ''} 
-        onChange={(e) => setStartDate(e.target.value)} 
-      />
-    </label>
-    <label>
-      Fecha término:
-      <input 
-        type="date" 
-        value={endDate || ''} 
-        onChange={(e) => setEndDate(e.target.value)} 
-      />
-    </label>
-    <label>
-      Producto:
-      <select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)}>
-        <option value="All">Todos</option>
-        {products.map((product) => (
-          <option key={product.product_id} value={product.product_id}>
-            {product.brand}
-          </option>
-        ))}
-      </select>
-    </label>
-    <button onClick={loadRecords}>Buscar</button>
-    <button onClick={() => { setStartDate(null); setEndDate(null); setSelectedProduct('All'); }}>Limpiar filtros</button>
-  </div>
-) : null}
+
       <ul className="record-list">
         {records.map((record) => (
           <li key={record.prod_id} className="record-item">
@@ -335,13 +305,13 @@ function RecordPage() {
                 <span className="record-label">Hora de creación:</span>
                 <span className="record-value">{record.time_created}</span>
               </div>
-              
             </div>
             {canEditAndDelete && (
               <div className="record-actions">
                 <button onClick={() => handleEdit(record)}>Editar</button>
-                <button className="delete" onClick={() => handleDelete(record)}>Eliminar</button>
-
+                <button className="delete" onClick={() => handleDelete(record)}>
+                  Eliminar
+                </button>
               </div>
             )}
           </li>
