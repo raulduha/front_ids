@@ -95,7 +95,15 @@ function StoragePage() {
       console.error('Error loading storage items:', error);
     }
   };
-
+  useEffect(() => {
+    if (user) {
+      // Set startDate to today's date by default
+      const today = new Date().toISOString().split('T')[0];
+      setStartDate(today);
+  
+      loadStorageItems();
+    }
+  }, [user]);
   useEffect(() => {
     if (startDate || endDate || filter !== 'All' || selectedProduct !== 'All') {
       loadStorageItems();

@@ -162,6 +162,10 @@ function RecordPage() {
 
   useEffect(() => {
     if (user) {
+      // Set startDate to today's date by default
+      const today = new Date().toISOString().split('T')[0];
+      setStartDate(today);
+  
       loadRecords();
     }
   }, [user]);
