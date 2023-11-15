@@ -13,23 +13,13 @@ function Footer() {
         <p className='footer-subscription-text' style={{ color: '#fff' }}>
                     
         </p>
-        <div className='input-areas'>
-          <form>
-            <input
-              className='footer-input'
-              name='email'
-              type='email'
-              placeholder='Your Email'
-            />
-            <Button buttonStyle='btn--outline'>Subscribe</Button>
-          </form>
-        </div>
+        
       </section>
       <div className='footer-links'>
         <div className='footer-link-wrapper'>
           <div className='footer-link-items'>
             <h2 style={{ color: '#fff' }}>About Us</h2>
-            <Link to='/sign-up' style={{ color: '#fff' }}>How it works</Link>
+            <Link to='/' style={{ color: '#fff' }}>How it works</Link>
             <Link to='/' style={{ color: '#fff' }}>Testimonials</Link>
             <Link to='/' style={{ color: '#fff' }}>Careers</Link>
             <Link to='/' style={{ color: '#fff' }}>Investors</Link>
