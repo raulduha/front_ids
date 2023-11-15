@@ -6,12 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function StoragePage() {
-  const [storageItems, setStorageItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [storage, setStorage] = useState([]);
   const [users, setUsers] = useState([]);
-  const [editingItem, setEditingItem] = useState(null);
-
   const [newStorageItem, setNewStorageItem] = useState({
     product_id: '',
     quantity: '',
@@ -22,10 +19,11 @@ function StoragePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [filter, setFilter] = useState('All'); // Default filter is 'All'
+  const [filter, setFilter] = useState('All');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState('All');
+  const [sortOrder, setSortOrder] = useState('desc'); // Default sort order is descending
 
   useEffect(() => {
     const loadUsersAndProducts = async () => {
@@ -34,9 +32,6 @@ function StoragePage() {
         setUsers(usersResponse.data);
         const productsResponse = await axios.get(`${baseURL}/products`);
         setProducts(productsResponse.data);
-        const storageResponse = await axios.get(`${baseURL}/storage`);
-        const sortedItems = storageResponse.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        setStorage(sortedItems);
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -49,9 +44,6 @@ function StoragePage() {
     try {
       let response = await axios.get(`${baseURL}/storage`);
       let filteredStorage = response.data;
-
-      // Sort by date
-      filteredStorage.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
       // Filter by startDate and endDate
       if (startDate) {
@@ -85,10 +77,18 @@ function StoragePage() {
           });
         }
       }
+
       // Filtrar por producto
       if (selectedProduct !== 'All') {
         filteredStorage = filteredStorage.filter((item) => item.product_id.toString() === selectedProduct);
       }
+
+      // Ordenar según sortOrder
+      filteredStorage.sort((a, b) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      });
 
       setStorage(filteredStorage);
     } catch (error) {
@@ -97,8 +97,12 @@ function StoragePage() {
   };
 
   useEffect(() => {
-    loadStorageItems();
-  }, [filter, startDate, endDate, selectedProduct]);
+    if (startDate || endDate || filter !== 'All' || selectedProduct !== 'All') {
+      loadStorageItems();
+    } else {
+      setStorage([]); // No filters applied, so initially don't show any storage items
+    }
+  }, [filter, startDate, endDate, selectedProduct, sortOrder]);
 
   const handleCreateStorageItem = async (e) => {
     e.preventDefault();
@@ -116,7 +120,11 @@ function StoragePage() {
 
       // Create a new array, add the new item, and sort it
       const newStorageList = [...storage, response.data];
-      newStorageList.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      newStorageList.sort((a, b) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      });
       setStorage(newStorageList); // Update the storage state with the new sorted array
 
       setNewStorageItem({
@@ -127,20 +135,6 @@ function StoragePage() {
     } catch (error) {
       console.error('Error creating storage item:', error);
       toast.error('Failed to create storage item.');
-    }
-  };
-
-  const handleDelete = async (storageId) => {
-    // Ask for confirmation before deleting the item
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      try {
-        await axios.delete(`${baseURL}/storage/${storageId}`);
-        toast.success('Item deleted successfully');
-        setStorage(storage.filter(item => item.storage_id !== storageId)); // Make sure 'item.id' is the correct identifier
-      } catch (error) {
-        toast.error('Error deleting item');
-        console.error('There was an error deleting the item:', error);
-      }
     }
   };
 
@@ -211,45 +205,59 @@ function StoragePage() {
             ))}
           </select>
         </label>
-        <button onClick={loadStorageItems}>Filter</button>
+        <button onClick={loadStorageItems}>Buscar</button>
         <button onClick={() => { setStartDate(null); setEndDate(null); setFilter('All'); }}>
-          Clear Filters
+          Limpiar Fechas
         </button>
+        <label>
+          Ordenar:
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="desc">Más nuevos primero</option>
+            <option value="asc">Más antiguos primero</option>
+          </select>
+        </label>
       </div>
 
       <ul className="storage-list">
-        {storage.map((item) => (
-          <li key={item.id} className="storage-item">
-            <div className="storage-field">
-              <span className="storage-label">Producto:</span>
-              <span className="storage-value">
-                {products.find((product) => product.product_id === item.product_id)?.brand}
-              </span>
-            </div>
-            <div className="storage-field">
-              <span className="storage-label">Tipo:</span>
-              <span className="storage-value">
-                {products.find((product) => product.product_id === item.product_id)?.type}
-              </span>
-            </div>
-            <div className="storage-field">
-              <span className="storage-label">Formato:</span>
-              <span className="storage-value">
-                {products.find((product) => product.product_id === item.product_id)?.format}
-              </span>
-            </div>
-            <div className="storage-field">
-              <span className="storage-label">Monto:</span>
-              <span className="storage-value">{item.amount}</span>
-            </div>
-            {(user.role === 2 || user.role === 4) && 
-              <>
-                <button onClick={() => handleDelete(item.storage_id)}>Delete</button>
-                <button onClick={() => navigate(`/edit-storage/${item.storage_id}`)}>Edit</button>
-              </>
-            }
-          </li>
-        ))}
+        {storage.length > 0 ? (
+          storage.map((item) => (
+            <li key={item.id} className="storage-item">
+              <div className="storage-field">
+                <span className="storage-label">Producto:</span>
+                <span className="storage-value">
+                  {products.find((product) => product.product_id === item.product_id)?.brand}
+                </span>
+              </div>
+              <div className="storage-field">
+                <span className="storage-label">Tipo:</span>
+                <span className="storage-value">
+                  {products.find((product) => product.product_id === item.product_id)?.type}
+                </span>
+              </div>
+              <div className="storage-field">
+                <span className="storage-label">Formato:</span>
+                <span className="storage-value">
+                  {products.find((product) => product.product_id === item.product_id)?.format}
+                </span>
+              </div>
+              <div className="storage-field">
+                <span className="storage-label">Monto:</span>
+                <span className="storage-value">{item.amount}</span>
+              </div>
+              {(user.role === 2 || user.role === 4) && (
+                <>
+                  <button onClick={() => handleDelete(item.storage_id)}>Delete</button>
+                  <button onClick={() => navigate(`/edit-storage/${item.storage_id}`)}>Edit</button>
+                </>
+              )}
+            </li>
+          ))
+        ) : (
+          <p>No hay elementos de almacenamiento que coincidan con los filtros seleccionados.</p>
+        )}
       </ul>
     </div>
   );
