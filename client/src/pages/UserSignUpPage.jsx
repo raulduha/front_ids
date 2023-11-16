@@ -24,7 +24,7 @@ export function UserSignUpPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/records/api/v1/users/signup/', formData);
+      const response = await axios.post('http://24.144.85.42:8001/records/api/v1/users/signup/', formData);
       console.log('Registro exitoso', response.data);
       navigate('/login');
     } catch (error) {

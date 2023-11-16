@@ -15,7 +15,7 @@ function StoragePage() {
     modified_by: null,
   });
 
-  const baseURL = 'http://localhost:8000/records/api/v1';
+  const baseURL = 'http://24.144.85.42:8001/records/api/v1';
   const { user } = useAuth();
   const navigate = useNavigate();
 

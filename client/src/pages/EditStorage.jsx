@@ -12,7 +12,7 @@ const EditStorage = () => {
   });
   const { storageId } = useParams();
   const navigate = useNavigate();
-  const baseURL = 'http://localhost:8000/records/api/v1';
+  const baseURL = 'http://24.144.85.42:8001/records/api/v1';
 
   useEffect(() => {
     const fetchStorageItem = async () => {

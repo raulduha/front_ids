@@ -17,7 +17,7 @@ function EditPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/records/api/v1/productions/${id}`)
+      .get(`http://24.144.85.42:8001/records/api/v1/productions/${id}`)
       .then((response) => {
         const data = response.data;
         setRecord(data);

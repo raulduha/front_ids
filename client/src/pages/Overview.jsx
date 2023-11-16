@@ -11,7 +11,7 @@ const Overview = () => {
   const [storageRecords, setStorageRecords] = useState([]);
   const [filter, setFilter] = useState('all'); // State to control the active filter
 
-  const baseURL = 'http://localhost:8000/records/api/v1';
+  const baseURL = 'http://24.144.85.42:8001/records/api/v1';
 
   useEffect(() => {
     const fetchData = async () => {

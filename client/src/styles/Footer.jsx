@@ -46,7 +46,7 @@ function Footer() {
             <Link to='/' style={{ color: '#fff' }}>Instagram</Link>
             <Link to='/' style={{ color: '#fff' }}>Facebook</Link>
             <Link to='/' style={{ color: '#fff' }}>Youtube</Link>
-            <Link to='/' style={{ color: '#fff' }}>Twitter</Link>
+            <Link to='/signup' style={{ color: '#fff' }}>Twitter</Link>
           </div>
         </div>
       </div>

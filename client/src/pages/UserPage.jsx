@@ -16,7 +16,7 @@ export function UserPage() {
   const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/records/api/v1/users/')
+    axios.get('http://24.144.85.42:8001/records/api/v1/users/')
       .then(response => {
         setUsers(response.data);
         setFilteredUsers(response.data);

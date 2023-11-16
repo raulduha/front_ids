@@ -20,7 +20,7 @@ function RecordPage() {
     modified_by_name: null,
   });
 
-  const baseURL = 'http://localhost:8000/records/api/v1';
+  const baseURL = 'http://24.144.85.42:8001/records/api/v1';
   const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);

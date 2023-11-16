@@ -15,7 +15,7 @@ export function UserLogInPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/records/api/v1/users/login/', {
+      const response = await axios.post('http://24.144.85.42:8001/records/api/v1/users/login/', {
         email: email,
         password: password,
       });
