@@ -1,0 +1,9 @@
+{
+    "version": 2,
+    "builds": [{ "src": "public/**/*", "use": "@vercel/static" }],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "http://24.144.85.42:8001/api/$1" },
+      { "src": "/(.*)", "dest": "/$1" }
+    ]
+  }
+  
